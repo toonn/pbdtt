@@ -1,4 +1,29 @@
 \chapter{Inleiding}
 \label{inleiding}
 
+types
+dependent types
+agda
+haskell
+vec relalg
 
+In deze thesis worden twee programmeertalen met een sterk typesysteem
+vergeleken. Dit met een nadruk op het typesysteem van de talen eerder dan de
+talen zelf. Het gaat hier om twee functionele programmeertalen: Agda
+\ref{agda}, een dependently typed programmeertaal, en Haskell \ref{haskell},
+een taal met een Hindley-Milner \ref{hindmil} typesysteem.
+
+
+\section{Typesysteem}
+
+Een typesysteem is een verzameling van regels waaraan code in een bepaalde
+programmeertaal moet voldoen. Er zijn vershillende redenen om zulke regels op
+te leggen. De belangrijkste is type safety; dit betekent dat de computer nooit
+onzinnige bewerkingen zal uitvoeren, wat een onzinnige bewerking juist is,
+hangt af van het typesysteem. Gewoonlijk worden bewerking zoals optelling enkel
+gedefinieerd op getallen, een voorbeeld van een onzinnige bewerking zou dan een
+optelling kunnen zijn van een getal en een lijst. Een andere vorm van
+bescherming die onder type safety valt is memory safety. Een belangrijke vorm
+hiervan is bescherming tegen buffer overflows, deze hebben vaak security
+vulnerabilities tot gevolg maar als het typesysteem over genoeg informatie
+beschikt, kan gegarandeerd worden dat ze niet voorkomen.
