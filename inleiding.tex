@@ -1,12 +1,6 @@
 \chapter{Inleiding}
 \label{inleiding}
 
-types
-dependent types
-agda
-haskell
-vec relalg
-
 In deze thesis worden twee programmeertalen met een sterk typesysteem
 vergeleken. Dit met een nadruk op het typesysteem van de talen eerder dan de
 talen zelf. Het gaat hier om twee functionele programmeertalen: Agda
@@ -14,10 +8,10 @@ talen zelf. Het gaat hier om twee functionele programmeertalen: Agda
 een taal met een Hindley-Milner \ref{hindmil} typesysteem.
 
 
-\section{Typesysteem}
+\section{Typesystemen}
 
 Een typesysteem is een verzameling van regels waaraan code in een bepaalde
-programmeertaal moet voldoen. Er zijn vershillende redenen om zulke regels op
+programmeertaal moet voldoen. Er zijn verschillende redenen om zulke regels op
 te leggen. De belangrijkste is type safety; dit betekent dat de computer nooit
 onzinnige bewerkingen zal uitvoeren, wat een onzinnige bewerking juist is,
 hangt af van het typesysteem. Gewoonlijk worden bewerking zoals optelling enkel
@@ -26,4 +20,43 @@ optelling kunnen zijn van een getal en een lijst. Een andere vorm van
 bescherming die onder type safety valt is memory safety. Een belangrijke vorm
 hiervan is bescherming tegen buffer overflows, deze hebben vaak security
 vulnerabilities tot gevolg maar als het typesysteem over genoeg informatie
-beschikt, kan gegarandeerd worden dat ze niet voorkomen.
+beschikt, kan gegarandeerd worden dat ze niet kunnen voorkomen.
+Een andere reden voor een typesysteem is bijvoorbeeld optimalisatie: als de
+compiler meer informatie heeft kunnen er soms betere optimalisaties gedaan
+worden. Types kunnen ook een vorm van documentatie zijn: een typesynoniem kan
+bijvoorbeeld verduidelijken dat een functie een naam verwacht in plaats van een
+gewoon een string, wat het type is voor een opeenvolging van karakters.
+
+Er is een grote variatie aan bestaande typesystemen. Het typesysteem voor de
+programmeertaal C \ref{C}, heeft eenvoudige types die in direct verband staan
+met de voorstelling van de bijhorende waarden op het niveau van bits en bytes.
+Het typesysteem van Java \ref{Java} daarentegen is volledig gericht op de
+objectgeoriënteerde metafoor: een object wordt gedefinieerd door een klasse en
+die klasse \emph{is} tevens het type voor dat object. Het Hindley-Milner
+typesysteem wordt vaak gebruikt als basis voor het typesysteem van functionele
+programmeertalen. Het meest merkwaardige kenmerk van dit typesysteem is dat het
+meest algemene type voor een waarde altijd geïnfereert kan worden. Het
+resultaat hiervan is dat een programma geschreven kan worden zonder enige type
+annotatie en het typesysteem toch kan garanderen dat type safety behouden
+blijft. Het typesysteem van Haskell is gebaseerd op het Hindley-Milner
+typesysteem maar heeft een groot aantal uitbreidingen hierop. Zulke
+uitbreidingen maken het typesysteem expressiever.
+
+
+\section{Dependent Types}
+
+Dependent types zijn nauw verbonden met de Curry-Howard correspondence
+\ref{curryhow}. Ze breiden het verband tussen types en propositielogica uit tot
+een predicatenlogica door het mogelijk te maken om de logische kwantoren voor
+te stellen. Het verschil met andere typesystemen is dat dependent types kunnen
+afhangen van waarden, zo kan het type van een lijst afhangen van de lengte
+ervan. Deze op het eerste zicht kleine verandering heeft een grote impact op de
+expressiviteit van het typesysteem. Plotseling wordt het mogelijk om ontzettend
+veel eigenschappen van de code op te nemen in de types waardoor ze statisch
+gegarandeerd worden. Schendingen van de eigenschappen die we gecodeerd hebben
+in de types zijn dus schendingen van de type safety en het typesysteem laat
+zulke programma's niet toe.
+
+
+agda
+vec relalg
