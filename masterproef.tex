@@ -13,6 +13,22 @@
 % TODO: toggle voor gedrukte versie?
 \usepackage[pdfusetitle,colorlinks,plainpages=false]{hyperref}
 
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[outputdir=_build]{minted}
+
+% Missing unicode characters for Agda
+\usepackage{MnSymbol}
+\DeclareUnicodeCharacter{"2237}{$\squaredots$}
+\DeclareUnicodeCharacter{"25C2}{$\blacktriangleleft$}
+\DeclareUnicodeCharacter{"25B8}{$\blacktriangleright$}
+\DeclareUnicodeCharacter{"1D9C}{$^{c}$}
+\DeclareUnicodeCharacter{"225F}{$\stackrel{?}{=}$}
+
+% More readable mintinline
+\newcommand{\iagda}[1]{\mintinline{agda}{#1}}
+\newcommand{\ihask}[1]{\mintinline{haskell}{#1}}
+
 \begin{document}
 
 \begin{preface}
