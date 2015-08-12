@@ -25,9 +25,12 @@
 \DeclareUnicodeCharacter{"1D9C}{$^{c}$}
 \DeclareUnicodeCharacter{"225F}{$\stackrel{?}{=}$}
 
-% More readable mintinline
-\newcommand{\iagda}[1]{\mintinline{agda}{#1}}
-\newcommand{\ihask}[1]{\mintinline{haskell}{#1}}
+% More readable minted commands
+\newmintinline[iagda]{agda}{}
+\newmintinline[ihask]{haskell}{}
+
+\newmintedfile[inputagda]{agda}{}
+\newmintedfile[inputhaskell]{haskell}{}
 
 \begin{document}
 

@@ -1,2 +1,71 @@
 \chapter{Case: Verified Koopa Troopa Movement}
 \label{case:koopa}
+
+Deze eerste gevalstudie is geïnspireerd door de populaire Mario \ref{mario}
+franchise van Nintendo \ref{nintendo}, in het bijzonder Super Mario Bros.
+\ref{supmario}. Er zijn verschillende vijanden in het spel maar hier beperken
+we ons tot de schildpadachtige Koopa Troopas. Zoals wel vaker voorkomt bevatten
+vele van de Mariospellen zogenaamde \emph{glitches}, fouten die uitgebuit
+kunnen worden om bepaalde acties uit te voeren die normaal moeilijk of
+onmogelijk zijn. Zo is er bijvoorbeeld een fout met een groene Koopa Troopa
+waardoor Mario aan het einde van het level over de vlag kan springen, dit is
+normaal niet mogelijk. Deze fout is eigenlijk de precieze inspiratie van deze
+gevalstudie.
+
+De Koopa Troopas komen voor in twee kleuren: rood en groen. De Koopa Troopas
+lopen in een richting tot ze een obstakel tegenkomen, dan keren ze om. Voor
+alle Koopa Troopas is een muur een obstakel, enkel voor de rode Koopa Troopas
+is een afgrond een obstakel. Dit heeft tot gevolg dat rode Koopa Troopas heen
+en weer patrouilleren en groene Koopa Troopas eerder trapsgewijs naar beneden
+vallen tot ze uit het beeld verdwijnen.
+
+
+\section{Koopa Troopas in Agda}
+
+Om het programmeren met dependent types zo duidelijk mogelijk te illustreren
+wordt alle code stap voor stap bekeken in begrijpelijk stukken. Helaas moet
+er ergens een grens getrokken worden die bepaald wat wel en niet uitgelegd
+wordt, deze thesis veronderstelt dat de lezer vertrouwd is met getypeerd
+functioneel programmeren. 
+
+De code begint met een module declaratie, deze is niet verplicht maar wel
+nuttig omdat ze het mogelijk maakt de code te gebruiken in andere programma's.
+Daarna importeren we een aantal eenvoudige types uit de standaard bibliotheek.
+
+\inputagda[firstline=8, lastline=15]{agda-casestt/koopa.agda}
+
+\iagda{Data.Nat} bevat een unaire voorstelling van natuurlijke getallen die we
+gaan gebruiken voor coördinaten. \iagda{Data.Fin} definieert een type voor
+begrensde natuurlijke getallen, dit gebruiken we zodat we bij index operaties
+niet buiten het bereik van een lijst kunnen gaan. \iagda{Data.Vec} definieert
+lijsten met een vaste lengte. \iagda{Data.Unit} definieert een type met één
+waarde namelijk \iagda{unit}. En, ten laatste, \iagda{Data.Empty} definieert
+een leeg type, dus een type waarvoor geen waarden bestaan. Dit is anders dan in
+Haskell waar je eigenlijk geen leeg type kunt hebben, elk type bevat daar
+minstens bottom als waarde.
+
+Het volgende is een geneste module declaratie waarin het type \iagda{Matrix}
+wordt gedefinieerd als een \iagda{Vec} van \iagda{Vec}s en een functie die een
+element uit een \iagda{Matrix} haalt. De types in deze module maken gebruik van
+redelijk wat verschillende features uit Agda, daarom volgt de uitleg over die
+features later met eenvoudigere voorbeelden. Vervolgens wordt de module geopend
+zodat we aan het type en de functie aan kunnen zonder de namen te moeten
+kwalificeren met de naam van de module.
+
+\inputagda[firstline=17, lastline=23]{agda-casestt/koopa.agda}
+
+Hierna begint de oplossing van het probleem eigenlijk pas echt. We definiëren
+een aantal types waarmee we de Koopa Troopas en de levels kunnen voorstellen.
+
+\inputagda[firstline=25, lastline=30]{agda-casestt/koopa.agda}
+
+Koopa Troopas kunnen twee kleuren hebben dus we definiëren een type
+\iagda{Color} met een constructor voor elke kleur. De definitie van een type
+begint in Agda steeds met het \iagda{data} sleutelwoord, gevolgd door de naam
+van het type dat we definiëren, een dubbel punt en dan het type van het type dat
+we aan het definiëren zijn, in dit geval \iagda{Set}, dan het sleutelwoord
+\iagda{where} en daarna alle constructors met hun types. Wat hier anders aan is
+dan in niet dependently typed talen is dat we het type van een type moeten
+specificeren. In dependently typed talen is de scheiding tussen typen en
+waarden fundamenteel opgeheven. in agda set synoniem set 0, set 1 ... haskell *
+box

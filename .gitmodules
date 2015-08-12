@@ -1,0 +1,3 @@
+[submodule "agda-casestt"]
+	path = agda-casestt
+	url = github:toonn/agda-casestt.git

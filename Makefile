@@ -9,4 +9,4 @@ pdf: masterproef.tex referenties.bib
 	mv _build/masterproef.pdf .
 
 clean:
-	rm -r _build
+	rm -r _build _minted-*
