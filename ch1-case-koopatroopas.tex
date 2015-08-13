@@ -62,10 +62,168 @@ een aantal types waarmee we de Koopa Troopas en de levels kunnen voorstellen.
 Koopa Troopas kunnen twee kleuren hebben dus we definiëren een type
 \iagda{Color} met een constructor voor elke kleur. De definitie van een type
 begint in Agda steeds met het \iagda{data} sleutelwoord, gevolgd door de naam
-van het type dat we definiëren, een dubbel punt en dan het type van het type dat
-we aan het definiëren zijn, in dit geval \iagda{Set}, dan het sleutelwoord
+van het type dat we definiëren, een dubbel punt en dan het type van het type
+dat we aan het definiëren zijn, in dit geval \iagda{Set}, dan het sleutelwoord
 \iagda{where} en daarna alle constructors met hun types. Wat hier anders aan is
 dan in niet dependently typed talen is dat we het type van een type moeten
 specificeren. In dependently typed talen is de scheiding tussen typen en
-waarden fundamenteel opgeheven. in agda set synoniem set 0, set 1 ... haskell *
-box
+waarden fundamenteel opgeheven. Het type van de meeste eenvoudige types is in
+Agda \iagda{Set}, wat eigenlijk \iagda{Set₀} is. Het type van \iagda{Set₀} is
+\iagda{Set₁} en deze hiërarchie gaat in theorie oneindig ver door. Haskell heeft
+gelijkaardige concepten maar daar gaat de hiërarchie niet erg ver door. De
+hiërarchie gaat als volgt in Haskell, met de Engelse termen omdat ze niet
+allemaal een goede vertaling hebben: een value heeft een type, een type heeft
+een kind, een kind heeft een sort en hier stopt de hiërarchie. Het dichtste
+equivalent van \iagda{Set} is in Haskell het kind \ihask{*}, \ihask{*} heeft
+nog sort \ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
+\ihask{BOX} enkel en alleen een intellectueel concept is, het is niet uit te
+drukken in Haskell zelf.
+Het tweede verschil met een type declaratie in een taal zoals Haskell is dat
+we het type van elke constructor moeten opgeven, voor \iagda{Color} is dit
+triviaal en de constructors zouden iets bondiger gedefinieerd kunnen worden als
+volgt: \iagda{Green Red : Color}. In een type zoals \iagda{Vec} zijn de types
+van de verschillende constructors wel verschillend. Het type
+\iagda{KoopaTroopa} is niet van het type \iagda{Set} maar wel van het type
+\iagda{Color → Set}, dit wil zeggen dat er een type is voor elke \iagda{Color}.
+De Constructor maakt gebruik van de Agda syntax voor mixfix notatie: de
+underscores geven aan waar er een argument verwacht wordt. In dit geval is
+\iagda{KT} dus een postfix constructor. Elke mixfix functie en constructor kan
+in Agda ook als prefix gebruikt worden door de naam volledig te schrijven met
+underscores. Dit is enkel van belang wat syntax betreft maar is een van de
+manieren waarop Agda experimenteert met nieuwe methoden. De \iagda{_KT}
+constructor verwacht een \iagda{Color} en maakt dan een waarde van het type
+\iagda{KoopaTroopa c} waar die \iagda{c} dus de waarde van het argument is. Een
+groene Koopa Troopa kunnen we dus voorstellen als \iagda{Green KT} en heeft het
+type \iagda{KoopaTroopa Green}, later wordt duidelijk waarom het belangrijk is
+dat de kleur in het type zit.
+
+Het volgende stuk bevat nog een aantal type declaraties. Hier definiëren we
+posities met alle informatie die we later nodig hebben om te bepalen op welke
+posities een Koopa Troopa mag staan.
+
+\inputagda[firstline=32, lastline=48]{agda-casestt/koopa.agda}
+
+Elke positie is ofwel lucht ofwel grond of muur of iets dergelijks. Het type
+\iagda{Material} stelt deze toestanden voor. Het type \iagda{Clearance}
+gebruiken we om te bepalen wie of wat waar mag komen. Een positie met
+\iagda{Clearance} \iagda{Low} kan door eender welke Koopa Troopa betreden
+worden maar een positie met \iagda{Clearance} \iagda{High} kan enkel door
+groene Koopa Troopas betreden worden en gebruiken we om posities aan te duiden
+waar de enige logische beweging vallen is. Een positie stellen we voor door een
+record met twee velden voor een horizontale en een verticale coördinaat, een
+veld dat het \iagda{Material} van de positie aangeeft en een veld voor de
+\iagda{Clearance}. De constructor \iagda{pos} kunnen we gebruiken om een
+positie op te stellen, een voorbeeld van een positie kan dus zijn: \iagda{pos 3
+5 gas Low}.
+
+Om de Koopa Troopas een \iagda{Clearance} te geven moeten we ze op een of
+andere manier differentiëren en het enige dat verschilt tussen de Koopa Troopas
+is hun kleur wat dus de meest logische bepalende factor van de
+\iagda{Clearance} wordt.
+
+\inputagda[firstline=50, lastline=52]{agda-casestt/koopa.agda}
+
+In plaats van groen en rood gelijk te stellen aan respectievelijk een hoge en
+een lage \iagda{Clearance}, werkt de constructor \iagda{<red>} voor beide
+kleuren terwijl \iagda{<green>} enkel voor groen werkt. Dit zorgt ervoor dat we
+later niet moeten zorgen dat overal waar een lage \iagda{Clearance} toegelaten
+is ook een hoge \iagda{Clearance} toegelaten is, een groene Koopa Troopa krijgt
+gewoon de \iagda{Clearance} die hij nodig heeft. We zien hier ook dat de mixfix
+notatie ook voor types mogelijk is, in dit geval gebruiken we dit om het type
+voor te stellen als een pijl, \iagda{_c>_}, van een kleur naar een
+\iagda{Clearance}. In de constructor \iagda{<red>} zien we ook een argument,
+\iagda{∀{c}}, met een universele kwantor en accolades. De universele kwantor
+laat ons toe om het type van de variabele \iagda{c} niet te specificeren, de
+accolades geven aan dat het gaat om een impliciet argument. Dit argument moeten
+we meestal niet expliciet geven en wordt uit de context gehaald, in dit geval
+kunnen we het argument altijd afleiden uit het eigenlijke type omdat er een
+index van hetzelfde type is.
+
+De volgende twee definities zijn eigenlijk het belangrijkste deel van de
+oplossing en steunen op alle voorgaande concepten.
+
+\inputagda[firstline=54, lastline=69]{agda-casestt/koopa.agda}
+
+Het \iagda{_follows_⟨_⟩} type is op het eerste zicht waarschijnlijk een beetje
+vreemd, dit is omdat de waarden van het type eigenlijk minder belangrijk zijn
+dan het type zelf. Het type drukt uit welke positie kan volgen op welke positie
+rekening houdend met een kleur. Omdat hier de types van de constructors
+belangrijk zijn, overlopen we ze een voor een. \iagda{stay} drukt uit dat een
+Koopa Troopa altijd kan blijven staan zolang hij in lucht staat met een lage
+\iagda{Clearance}. De \iagda{Material} moet \iagda{gas} zijn omdat een Koopa
+Troopa niet in grond of muren mag staan en de \iagda{Clearance} moet
+\iagda{Low} zijn omdat we willen dat ook rode Koopa Troopas kunnen stilstaan.
+Eigenlijk is stilstaan niet echt een nodige \emph{beweging} maar hiermee kunnen
+we later de eindpositie van een pad expliciet maken. De volgende twee
+constructors \iagda{next} en \iagda{back} bekijken we tegelijk omdat ze heel
+gelijkaardig zijn. Ze drukken uit dat een positie met een bepaalde
+\iagda{Clearance} enkel kan volgen op een horizontaal vorige, respectievelijk
+volgende, positie als de kleur van de Koopa Troopa die \iagda{Clearance}
+oplevert. Ook moet de voorgaande positie een lage \iagda{Clearance} hebben, dit
+is omdat we de hoge \iagda{Clearance} gebruiken voor posities waar de enige
+mogelijke beweging vallen is. Het \iagda{Material} voor de posities moet nog
+steeds \iagda{gas} zijn omdat Koopa Troopas niet in muren kunnen lopen.  De
+laatste constructor is \iagda{fall} en die kan enkel gebruikt worden als
+beweging van een positie met een hoge \iagda{Clearance}. Aangezien enkel groene
+Koopa Troopas op een positie met een hoge \iagda{Clearance} kunnen geraken,
+zijn dat ook de enige die kunnen vallen. Nogmaals kunnen we alleen vallen van
+een positie in lucht naar een positie in lucht, Koopa Troopas kunnen dus niet
+de grond in vallen.
+
+Het type waarmee we de paden voorstellen die Koopa Troopas kunnen afleggen,
+\iagda{Path}, moet ervoor zorgen dat enkel geldige paden worden opgesteld voor
+een bepaalde Koopa Troopa. We zien hier ook iets nieuw, er staan parameters
+voor de dubbel punt waarachter de indices komen. Het verschil tussen een
+parameter en een index van een type is dat indices kunnen variëren per
+constructor terwijl een parameter voor alle constructors dezelfde is. De
+parameter voor de kleur is impliciet omdat die volgt uit het type van de Koopa
+Troopa, verder hangt de geldigheid van een pad af van de Koopa Troopa en kan
+een pad maar voor één Koopa Troopa tegelijk opgesteld worden dus is er een
+parameter waar we een Koopa Troopa verwachten. Een pad gaat van een
+beginpositie naar een eindpositie en die moeten kunnen variëren voor de
+verschillende constructors dus dat zijn indices. De constructor voor een leeg
+pad, \iagda{[]}, moet een begin- en een eindpositie hebben maar die kunnen we
+impliciet verkrijgen uit de vorige positie van het pad en als er geen vorige
+positie is uit het verwachte type. De constructor om langere paden op te
+stellen maakt weer gebruik van mixfix notatie, de \iagda{infixr} declaratie
+zorgt ervoor dat de constructor rechts associatief is waardoor we minder
+haakjes zullen nodig hebben. De constructor verwacht een positie \iagda{p}, een
+pad van \iagda{q} naar \iagda{r}, \iagda{qs}, en een bewijs dat \iagda{q} kan
+volgen op \iagda{p} voor de kleur van de Koopa Troopa en resulteert in een pad
+van \iagda{p} naar \iagda{r}. \iagda{_↠⟨_⟩_} behoudt de geldigheid van een pad
+door het argument van het type \iagda{_follows_⟨_⟩} en de enige manier om een
+pad te beginnen is met een leeg pad dat dus sowieso geldig is. Door deze
+eigenschap zijn alle paden geldig bij wijze van constructie.
+
+We kunnen nu paden beginnen opstellen maar een belangrijk probleem is nog dat
+de geldigheid van de paden afhangt van een goede bepaling van de
+\iagda{Clearance} van elke positie. Wat volgt is eerst een klein voorbeeld van
+een pad en daarna een mogelijke oplossing voor een juiste bepaling van de
+\iagda{Clearance} voor elke positie.
+
+\inputagda[firstline=71, lastline=74]{agda-casestt/koopa.agda}
+
+Om ervoor te zorgen dat de \iagda{Clearance} juist bepaald wordt, gaan we
+een functie gebruiken die de regels voor de bepaling van een \iagda{Clearance}
+uitdrukt.
+
+\inputagda[firstline=78, lastline=86]{agda-casestt/koopa.agda}
+
+De \iagda{matToPosVec} functie verwacht twee \iagda{Vec}s van dezelfde lengte
+met \iagda{Material}s in en de coördinaten die aangeven bij welke positie het
+eerste \iagda{Material} in de eerste \iagda{Vec} hoort. Het resultaat is een
+\iagda{Vec} van dezelfde lengte met posities in met de juiste coördinaten, de
+\iagda{Material}s uit de eerste \iagda{Vec} en de juiste \iagda{Clearance} die
+afhangt van het \iagda{Material} van de positie onder een positie, vandaar dat
+we twee \iagda{Vec}s in de invoer nodig hebben. Het basisgeval is wanneer de
+\iagda{Vec}s leeg zijn, in het andere geval bepaalt de functie \iagda{clearance}
+wat de juiste \iagda{Clearance} voor de positie is aan de hand van het
+\iagda{Material} van de positie zelf en van de positie er onder. Lucht boven
+lucht heeft \iagda{Clearance} \iagda{High} omdat daar alleen gevallen kan
+worden, lucht boven grond heeft \iagda{Clearance} \iagda{Low} omdat elke Koopa
+Troopa moet kunnen staan. Alle grond en muur posities hebben \iagda{Clearance}
+\iagda{Ultimate} omdat geen enkele Koopa Troopa zich in een muur of de grond
+mag bevinden.
+
+TODO: kort besluit, vermelden dat agda heel flexibel is wat betreft namen,
+hoofdletters, unicode, mixfix
