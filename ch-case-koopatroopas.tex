@@ -1,5 +1,5 @@
 \chapter{Case: Verified Koopa Troopa Movement}
-\label{case:koopa}
+\label{ch:case-koopa}
 
 Deze eerste gevalstudie is geïnspireerd door de populaire Mario \ref{mario}
 franchise van Nintendo \ref{nintendo}, in het bijzonder Super Mario Bros.
@@ -23,10 +23,7 @@ vallen tot ze uit het beeld verdwijnen.
 \section{Koopa Troopas in Agda}
 
 Om het programmeren met dependent types zo duidelijk mogelijk te illustreren
-wordt alle code stap voor stap bekeken in begrijpelijk stukken. Helaas moet
-er ergens een grens getrokken worden die bepaald wat wel en niet uitgelegd
-wordt, deze thesis veronderstelt dat de lezer vertrouwd is met getypeerd
-functioneel programmeren. 
+wordt alle code stap voor stap bekeken in begrijpelijk stukken.  
 
 De code begint met een module declaratie, deze is niet verplicht maar wel
 nuttig omdat ze het mogelijk maakt de code te gebruiken in andere programma's.
@@ -66,23 +63,9 @@ van het type dat we definiëren, een dubbel punt en dan het type van het type
 dat we aan het definiëren zijn, in dit geval \iagda{Set}, dan het sleutelwoord
 \iagda{where} en daarna alle constructors met hun types. Wat hier anders aan is
 dan in niet dependently typed talen is dat we het type van een type moeten
-specificeren. In dependently typed talen is de scheiding tussen typen en
-waarden fundamenteel opgeheven. Het type van de meeste eenvoudige types is in
-Agda \iagda{Set}, wat eigenlijk \iagda{Set₀} is. Het type van \iagda{Set₀} is
-\iagda{Set₁} en deze hiërarchie gaat in theorie oneindig ver door. Haskell heeft
-gelijkaardige concepten maar daar gaat de hiërarchie niet erg ver door. De
-hiërarchie gaat als volgt in Haskell, met de Engelse termen omdat ze niet
-allemaal een goede vertaling hebben: een value heeft een type, een type heeft
-een kind, een kind heeft een sort en hier stopt de hiërarchie. Het dichtste
-equivalent van \iagda{Set} is in Haskell het kind \ihask{*}, \ihask{*} heeft
-nog sort \ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
-\ihask{BOX} enkel en alleen een intellectueel concept is, het is niet uit te
-drukken in Haskell zelf.
-Het tweede verschil met een type declaratie in een taal zoals Haskell is dat
-we het type van elke constructor moeten opgeven, voor \iagda{Color} is dit
-triviaal en de constructors zouden iets bondiger gedefinieerd kunnen worden als
-volgt: \iagda{Green Red : Color}. In een type zoals \iagda{Vec} zijn de types
-van de verschillende constructors wel verschillend. Het type
+specificeren. 
+
+Het type
 \iagda{KoopaTroopa} is niet van het type \iagda{Set} maar wel van het type
 \iagda{Color → Set}, dit wil zeggen dat er een type is voor elke \iagda{Color}.
 De Constructor maakt gebruik van de Agda syntax voor mixfix notatie: de

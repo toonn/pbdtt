@@ -1,0 +1,240 @@
+\chapter{Programmeertalen}
+\label{ch:agda-haskell}
+
+In dit hoofdstuk beschrijven we de programmeertalen die gebruikt zijn in de
+gevalstudies. Er moet ergens een grens getrokken worden die bepaald wat wel en
+niet uitgelegd wordt, deze thesis veronderstelt dat de lezer vertrouwd is met
+getypeerd functioneel programmeren.
+Omdat Agda minder bekend is, is de uitleg hierover uitgebreider dan die over
+Haskell. Het enige dat we voor Haskell moeten uitleggen zijn namelijk de
+extensies van GHC \ref{ghc} die we gebruiken.
+
+
+\section{Agda}
+
+Agda is een dependently typed programmeertaal. Talen met dependent types zijn
+dankzij de Curry-Howard correspondence ook bruikbaar als bewijsassistent. In
+vele andere talen met dependent types ligt de nadruk ook eerder op het gebruik
+als bewijsassistent dan wel als programmeertaal.
+
+\subsection{Dependent Types}
+
+Het belangrijkste verschil tussen Agda en andere functionele programmeertalen
+is het typesysteem. Een dependent type is een type dat afhangt van een waarde.
+De voorgaande zin legt eigenlijk alles uit dat belangrijk is aan dependent
+types maar iemand die nog niet vertrouwd is met dependent types zal hier weinig
+van opsteken. Vandaar overlopen we een aantal voorbeelden in Agda: eerst om de
+syntax te verduidelijken, daarna om te illustreren wat dependent types nu
+eigenlijk zijn.
+
+De definitie van nieuwe types gebeurt gelijkaardig als in andere getypeerde
+functionele programmeertalen. Een \iagda{data} sleutelwoord wordt gevolgd door
+de naam van het type, een dubbel punt, het type van het type, dan het
+sleutelwoord \iagda{where} en op de volgende regels de constructors met hun
+type. Nemen we als voorbeeld een definitie voor natuurlijke getallen:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  data Nat : Set where
+    zero : Nat
+    suc  : Nat → Nat
+\end{minted}
+
+Dit geeft ons een unaire voorstelling van de natuurlijke getallen, het getal 2
+stellen we bijvoorbeeld voor als volgt: \iagda{suc (suc zero)}. Een verschil
+met andere talen is dat we het type van het type moeten opgeven.  In
+dependently typed talen is de scheiding tussen types en waarden fundamenteel
+opgeheven. Het type van de meeste eenvoudige types is in Agda \iagda{Set}, wat
+eigenlijk \iagda{Set₀} is. Het type van \iagda{Set₀} is \iagda{Set₁} en deze
+hiërarchie gaat in theorie oneindig ver door. Haskell heeft gelijkaardige
+concepten maar daar gaat de hiërarchie niet erg ver door. De hiërarchie gaat
+als volgt in Haskell, met de Engelse termen omdat ze niet allemaal een goede
+vertaling hebben: een value heeft een type, een type heeft een kind, een kind
+heeft een sort en hier stopt de hiërarchie. Het dichtste equivalent van
+\iagda{Set} is in Haskell het kind \ihask{*}, \ihask{*} heeft nog sort
+\ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
+\ihask{BOX} enkel en alleen een intellectueel concept is, het is niet uit te
+drukken in Haskell zelf.  Het tweede verschil met een type declaratie in een
+taal zoals Haskell is dat we het type van elke constructor moeten opgeven, voor
+\iagda{Nat} is dit heel eenvoudig. In het volgende voorbeeld wordt duidelijker
+waarom we deze types moeten specificeren.
+
+Dit voorbeeld wordt vaak gebruikt om het concept van dependent types te
+illustreren. Deze code komt uit de Agda Standard Library \ref{agda:stdlib} maar
+is licht aangepast om het voorbeeld eenvoudiger te maken.
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  data Vec (A : Set) : ℕ → Set where
+    []  : Vec A zero
+    _∷_ : ∀ {n} (x : A) (xs : Vec A n) → Vec A (suc n)
+
+  head : ∀ {n} {A : Set} → Vec A (suc n) → A
+  head (x ∷ xs) = x
+\end{minted}
+
+\iagda{Vec} is het type voor lijsten met een vaste lengte, vanaf nu noemen we
+dit vectors. Hier zien we twee nieuwe dingen, het type \iagda{Vec} verwacht nog
+twee argumenten. Het eerste is de parameter voor de dubbel punt, \iagda{A} met
+als type \iagda{Set} dus \iagda{A} is een eenvoudig type. Het tweede is de
+index van het type \iagda{ℕ}, dit is de naam van het type voor natuurlijke
+getallen uit de standard library, het verschil tussen een index en een
+parameter is dat een index voor elke constructor kan variëren terwijl een
+parameter voor alle constructors hetzelfde is. Een type met indices noemen we
+ook wel een inductieve familie \ref{indfam}. De lege vector, \iagda{[]},
+heeft lengte nul, het type is \iagda{Vec A zero}: het is dus een vector van
+elementen van type \iagda{A} met lengte \iagda{zero}. De constructor die
+langere vectoren maakt, verwacht een element, \iagda{x} van type \iagda{A}, een
+vector met elementen van hetzelfde type \iagda{A} en een bepaalde lengte
+\iagda{n}, namelijk \iagda{xs} met als type \iagda{Vec A n}, en geeft een
+vector terug waarvan de lengte één groter is, \iagda{Vec A (suc n)}. De
+\iagda{head} functie, die het eerste element van een vector terug geeft kan dan
+eisen dat ze enkel werkt op vectoren met een lengte groter dan nul, vectoren
+met type \iagda{Vec A (suc n)}. Als de lengte niet in het type opgenomen is,
+kan een functie er ook geen voorwaarden aan opleggen. Zo moet de \ihask{head}
+functie voor gewone lijsten in Haskell een fout opwerpen wanneer ze opgeroepen
+wordt met een lege lijst als argument.  Dit is een heel eenvoudig voorbeeld en
+hieruit blijkt niet welke van de twee een betere manier is om lijsten voor te
+stellen.  Het laat wel zien wat het betekent voor een type om af te hangen van
+een waarde. Wat we ook zien, zowel in het type van \iagda{_∷_} als \iagda{head}
+is \iagda{∀ \{n\}}, de universele kwantor zorgt dat \iagda{n} eender wat kan
+zijn zolang het voldoet aan de eisen in de rest van het type. De accolades rond
+\iagda{n} en in het type van \iagda{head} ook rond het type van het volgende
+argument, \iagda{\{A : Set\}}, duidt aan dat deze argumenten impliciet zijn, ze
+worden afgeleid uit de context, in dit geval bijvoorbeeld uit het type van het
+vector argument.
+
+Een meer uitgebreid voorbeeld uit een artikel dat het nut van dependent types
+goed uitlegt \ref{TPoP}, laat zien dat dependent types zeer expressief zijn.
+Het type \iagda{RA} laat toe om een relationele algebra expressie op te stellen
+die correct is door constructie. Het artikel beargumenteert dat het in Haskell
+niet mogelijk is om een interface naar een database te voorzien die evenveel
+statische garanties biedt en even volledig - joins zijn zonder dependent types
+moeilijk te typeren - is zonder gebruik te maken van preprocessing of
+experimentele features. Dit betekent niet dat er geen libraries bestaan voor
+Haskell die bepaalde eigenschappen statisch of dynamisch op leggen, maar wel
+dat die beperkter zijn en minder statisch kunnen zijn. Statische correctheid is
+handiger omdat ze geen uitvoerige testen noodzakelijk maakt.
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  data RA : Schema → Set where
+    Read    : ∀ {s} → Handle s → RA s
+    Union   : ∀ {s} → RA s → RA s → RA s
+    Diff    : ∀ {s} → RA s → RA s → RA s
+    Product : ∀ {s s'} → {_ : So (disjoint s s')} → RA s → RA s' → RA (append s s')
+    Project : ∀ {s} → (s' : Schema) → {_ : So (sub s' s)} → RA s → RA s'
+    Select  : ∀ {s} → Expr s BOOL → RA s → RA s
+\end{minted}
+
+Het type \iagda{Schema} stelt een schema van een relatie voor, door dit als
+index op te nemen, kunnen we bepaalde eisen stellen aan de schema's waarop een
+relationele expressie werkt. De \iagda{Read} constructor gelijkt een beetje op
+een lege lijst omdat die aan de basis van elke relationele expressie moet
+liggen, voor alle andere constructors voor een relationele expressie hebben we
+al een relationele expressie nodig. \iagda{Read} bevat de informatie die
+aangeeft in welke database de relatie te vinden is in een \iagda{Handle}. Zo'n
+\iagda{Handle} heeft tevens een schema als index en kunnen we enkel opstellen
+als de database inderdaad een relatie heeft die aan het schema voldoet. Voor de
+unie van twee relaties, \iagda{Union}, en het verschil tussen twee relaties,
+\iagda{Diff}, eisen we dat de schemas overeenkomen: een relatie kan maar een
+unie zijn van twee relaties als alle attributen overeenkomen, eigenlijk moeten
+de schema's niet hetzelfde zijn maar mogen ze permutaties van elkaar zijn maar
+dit kan opgelost worden door de implementatie van \iagda{Schema}. De
+constructor voor het cartesisch product, \iagda{Product}, heeft een impliciet
+argument van het type \iagda{So (disjoint s s')}, de underscore duidt aan dat
+we het argument niet gebruiken in de rest van het type maar moet er staan omdat
+we een type van een impliciet argument niet zonder een variabele kunnen
+opgeven. Het type \iagda{So (disjoint s s')} zorgt ervoor dat de schemas
+\iagda{s} en \iagda{s'} disjunct zijn omdat een relatie geen twee attributen
+met dezelfde naam kan hebben en een cartesisch product geen join is. Verder
+zien we dat \iagda{Product} een relationele expressie opstelt waarvan het
+resulterende schema de combinatie van de disjuncte schema's is. Voor de
+projectie, \iagda{Project}, eisen we dat de attributen die we uit een relatie
+willen projecteren inderdaad aanwezig zijn in de relatie. Het belangrijkste
+kenmerk van de \iagda{Select} constructor kunnen we helaas niet uitleggen
+zonder meer van het artikel over te nemen maar is niet belangrijk in de rest
+van dit werk.
+
+\subsection{Syntax}
+
+Wat ook opmerkelijk is aan Agda, is de vrijheid die er is door de flexibele
+syntax. Agda legt geen regels op in verband met hoofdletters voor types en
+constructors en kleine letters voor functies, dit mes snijdt natuurlijk aan
+twee kanten omdat types en functies minder gemakkelijk uit elkaar te houden
+zijn. Wat waarschijnlijk de belangrijkste reden is om zulke regels niet af te
+dwingen is dat er eigenlijk geen verschil is tussen waarden en types, een
+functie is ook een waarde, het is dus ook niet logisch om artificieel een
+verschil op te leggen in de schrijfwijze. Wat naamgeving betreft is nog een
+belangrijk kenmerk dat alle unicode karakters toegelaten zijn. Hier wordt in de
+standard library ook veel gebruik van gemaakt. Praktisch betekent dit dus dat
+er goede ondersteuning moet zijn van de tekstverwerker en het lettertype waarin
+je Agda code schrijft.
+
+Een belangrijker kenmerk van de syntax in Agda is dat types, constructors en
+functies gedefinieerd kunnen worden met mixfix notatie. Voor vectoren hebben we
+al een infix constructor gezien, een tweede voorbeeld van zulke notatie is dit:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  if_then_else_ : {A : Set} → Bool → A → A → A
+  if true then x else y = x
+  if false then x else y = y
+\end{minted}
+
+Deze functie kunnen we nu op twee manieren gebruiken. Met prefix notatie als we
+de naam met underscores overnemen als volgt: \iagda{if_then_else_ true x y}. Of
+zoals in de definitie in de mixfix vorm. Soms maakt dit de code gemakkelijker
+leesbaar. Wat wel noodzakelijk wordt door zo'n flexibele notatie is het
+veelvuldig gebruik van spaties, voor \iagda{if_then_else_} maakt dit weinig uit
+want daar zijn de spaties logisch maar stel bijvoorbeeld dat dit een functie
+is: \iagda{[_]}, dan moeten er spaties rond het argument, \iagda{[ x ]}, wat in
+het begin vreemd aanvoelt maar nodig is omdat \iagda{[x]} een geldige naam zou
+kunnen zijn voor een functie.
+
+
+\section{Haskell}
+
+Omdat we redelijk veel vergen van het typesysteem, komen we niet toe met
+standaard Haskell zoals bijvoorbeeld geïmplementeerd in GHC maar hebben we een
+aantal extensies nodig van GHC.
+
+\subsection{Waarden op typeniveau}
+
+Omdat we waarden nodig hebben op het niveau van types, wat dus eigenlijk types
+zijn, en die types zelf een type moeten hebben, wat in Haskell dus een kind is,
+maken we gebruik van de extensie DataKinds. Deze extensie laat ons toe om zelf
+kinds te definiëren met bijhorende types door onze gewone types te promoveren
+tot kinds en hun constructors te promoveren tot types. Een voorbeeld maakt dit
+veel duidelijker:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{haskell}
+  data Nat = Z | S Nat
+
+  two :: Nat
+  two = S (S Z)
+
+  type_level_two :: S (S Z)
+\end{minted}
+
+We definiëren gewoon een type voor natuurlijke getallen en door de DataKinds
+extensie wordt dit type een kind en de constructors types. Het kind \ihask{Nat}
+is dus het kind van twee types namelijk \ihask{Z} en \ihask{S Nat}. De
+\ihask{Nat} in \ihask{S Nat} is opnieuw het kind Nat niet het type. Omdat
+dezelfde namen voor verschillende concepten af en toe verwarrend kunnen zijn en
+het niet onmogelijk is dat we al een type \ihask{Z} gedefinieerd hadden, worden
+types en constructors ook altijd gepromoveerd tot kinds en types die beginnen
+met een apostrophe. Het type \ihask{Nat} wordt bijvoorbeeld altijd gepromoveerd
+tot de kind \ihask{'Nat} en de constructor \ihask{Z} tot het type \ihask{'Z}.
+Met deze extensie kunnen we dus waarden voorstellen op typeniveau waar de
+extensie nog tekortschiet is dat de waarde \ihask{Z} en het type \ihask{Z}
+volledig los van elkaar staan, buiten de naam. Er is ook geen waarde van het
+type \ihask{Z}. In één van de volgende hoofdstukken gebruiken we een techniek
+waarmee we de waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
+
+\subsection{Inductieve families}
+
+\subsection{multiparam, flexinst, polykinds}
+
+

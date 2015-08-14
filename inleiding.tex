@@ -20,12 +20,12 @@ optelling kunnen zijn van een getal en een lijst. Een andere vorm van
 bescherming die onder type safety valt is memory safety. Een belangrijke vorm
 hiervan is bescherming tegen buffer overflows, deze hebben vaak security
 vulnerabilities tot gevolg maar als het typesysteem over genoeg informatie
-beschikt, kan gegarandeerd worden dat ze niet kunnen voorkomen.
-Een andere reden voor een typesysteem is bijvoorbeeld optimalisatie: als de
-compiler meer informatie heeft kunnen er soms betere optimalisaties gedaan
-worden. Types kunnen ook een vorm van documentatie zijn: een typesynoniem kan
-bijvoorbeeld verduidelijken dat een functie een naam verwacht in plaats van een
-gewoon een string, wat het type is voor een opeenvolging van karakters.
+beschikt, kan gegarandeerd worden dat ze niet kunnen voorkomen.  Een andere
+reden voor een typesysteem is bijvoorbeeld optimalisatie: als de compiler meer
+informatie heeft kunnen er soms betere optimalisaties gedaan worden. Types
+kunnen ook een vorm van documentatie zijn: een typesynoniem kan bijvoorbeeld
+verduidelijken dat een functie een naam verwacht in plaats van een gewoon een
+string, wat het type is voor een opeenvolging van karakters.
 
 Er is een grote variatie aan bestaande typesystemen. Het typesysteem voor de
 programmeertaal C \ref{C}, heeft eenvoudige types die in direct verband staan
@@ -48,24 +48,24 @@ uitbreidingen maken het typesysteem expressiever.
 Dependent types zijn nauw verbonden met de Curry-Howard correspondence
 \ref{curryhow}. Ze breiden het verband tussen types en propositielogica uit tot
 een predicatenlogica door het mogelijk te maken om de logische kwantoren voor
-te stellen. Het verschil met andere typesystemen is dat dependent types kunnen
-afhangen van waarden, zo kan het type van een lijst afhangen van de lengte
-ervan. Deze op het eerste zicht kleine verandering heeft een grote impact op de
-expressiviteit van het typesysteem. Plotseling wordt het mogelijk om ontzettend
-veel eigenschappen van de code op te nemen in de types waardoor ze statisch
-gegarandeerd worden. Schendingen van de eigenschappen die we gecodeerd hebben
-in de types zijn dus schendingen van de type safety en het typesysteem laat
-zulke programma's niet toe.
+te stellen. Het verschil met andere typesystemen is dat een dependent type kan
+afhangen van waarden, zo kan het type van een lijst afhangen van de lengte van
+die lijst. Deze op het eerste zicht kleine verandering heeft een grote impact
+op de expressiviteit van het typesysteem. Plotseling wordt het mogelijk om
+ontzettend veel eigenschappen van de code op te nemen in de types waardoor ze
+statisch gegarandeerd worden. Schendingen van de eigenschappen die we gecodeerd
+hebben in de types zijn dus schendingen van de type safety en het typesysteem
+laat zulke programma's niet toe.
 
 De eigenschappen die we opnemen in de types gaan van heel eenvoudig,
 bijvoorbeeld de lengte van een lijst, tot eerder ingewikkeld, bijvoorbeeld
-invarianten van zoekbomen. Fundamenteel is er geen limiet, wat in logica uit te
-drukken is, is ook in de types uit te drukken. Echter als we ons bezig houden
-met programmeren eerder dan bewijzen formaliseren zijn de eigenschappen die we
-wensen af te dwingen vaak eerder eenvoudig. We gebruiken de types eerder om
-eigenschappen die we in talen zonder dependent types impliciet laten en dus in
-het achterhoofd moeten houden, expliciet te maken en zo door het typesysteem
-laten nakijken.
+invarianten van zoekbomen. Fundamenteel is er geen limiet, wat in de logica uit
+te drukken is, is ook in de types uit te drukken. Echter als we ons bezig
+houden met programmeren eerder dan bewijzen formaliseren zijn de eigenschappen
+die we wensen af te dwingen vaak redelijk eenvoudig. We gebruiken de types
+eerder om eigenschappen die we in talen zonder dependent types impliciet laten
+- en dus in het achterhoofd moeten houden - expliciet te maken en zo door het
+typesysteem te laten nakijken.
 
 De typentheorie waarop Agda gebaseerd is, gelijkt op de intuïtionistische
 typentheorie van Per Martin-Löf \ref{martinlof}. In deze thesis laten we dit
@@ -74,59 +74,20 @@ tegenstelling to Haskell, wat als voorbeeld dient voor een programmeertaal die
 in de praktijk toegepast wordt voor grootschalige systemen. Deze veralgemening
 schiet natuurlijk tekort, Agda is geen perfecte voorstelling van \emph{alle}
 programmeertalen met dependent types en Haskell is niet de enige
-programmeertaal die die op industriële schaal gebruikt kan worden met een sterk
+programmeertaal die op industriële schaal gebruikt kan worden met een sterk
 typesysteem.
 
-Het volgende voorbeeld wordt vaak gebruikt om het concept van dependent types
-te illustreren. Deze code komt uit de Agda Standard Library \ref{agda:stdlib}
-maar is licht aangepast om het voorbeeld eenvoudiger te maken.
 
-%----------------------------------------%
-\begin{minted}[fontsize=\small]{agda}
-  data Vec (A : Set) : ℕ → Set where
-    []  : Vec A zero
-    _∷_ : ∀ {n} (x : A) (xs : Vec A n) → Vec A (suc n)
+\section{Vergelijking}
 
-  head : ∀ {n} {A : Set} → Vec A (suc n) → A
-  head (x ∷ xs) = x
-\end{minted}
-
-TODO Deze code is waarschijnlijk nog te cryptisch voor iemand die nog nooit
-Agda heeft gezien, ofwel moet het meer gedetailleerd uitgelegd worden hier
-ofwel moet het voorbeeld pas in een later hoofdstuk behandeld worden.
-\iagda{Vec} is het type voor lijsten met een vaste lengte. De lege lijst,
-\iagda{[]}, heeft lengte nul, het type is \iagda{Vec A zero}: het is dus een
-\iagda{Vec} van elementen van type \iagda{A} met lengte \iagda{zero}. De
-constructor die langere lijsten maakt, verwacht een element, \iagda{x} van type
-\iagda{A}, een lijst met elementen van hetzelfde type \iagda{A} van een
-bepaalde lengte \iagda{n}, \iagda{xs} met als type \iagda{Vec A n}, en geeft
-een lijst terug waarvan de lengte één groter is. De \iagda{head} functie, die
-het eerste element van een lijst terug geeft kan dan eisen dat ze enkel werkt
-op lijsten met een lengte groter dan nul, lijsten met type
-\iagda{Vec A (suc n)}. Als de lengte niet in het type opgenomen is, kan een
-functie er ook geen voorwaarden aan opleggen. Zo moet de \ihask{head} functie
-voor gewone lijsten uit Haskell een fout opwerpen wanneer ze opgeroepen wordt
-met een lege lijst als argument. Dit is een heel eenvoudig voorbeeld en hieruit
-blijkt niet welke van de twee een betere manier is om lijsten voor te stellen.
-Het laat wel zien wat het betekent voor een type om af te hangen van een waarde.
-
-Een tweede voorbeeld uit een paper die het nut van dependent types goed uitlegt
-\ref{TPoP}, laat zien dat dependent types zeer expressief zijn. In Haskell is
-het bijvoorbeeld onmogelijk een veilige en volledige interface te voorzien naar
-een relationele database die niet steunt op preprocessing of experimentele
-features.
-
-%----------------------------------------%
-\begin{minted}[fontsize=\small]{agda}
-  data RA : Schema → Set where
-    Read    : ∀ {s} → Handle s → RA s
-    Union   : ∀ {s} → RA s → RA s → RA s
-    Diff    : ∀ {s} → RA s → RA s → RA s
-    Product : ∀ {s s'} → {_ : So (disjoint s s')} → RA s → RA s'
-              → RA (append s s')
-    Project : ∀ {s} → (s' : Schema) → {_ : So (sub s' s)}
-              → RA s → RA s'
-    Select  : ∀ {s} → Expr s BOOL → RA s → RA s
-\end{minted}
-
-TODO: uitleg bij dit voorbeeld.
+De vergelijking tussen Agda en Haskell wordt gemaakt aan de hand van twee
+concrete gevalstudies. Het gaat hier om twee probleemstellingen die eerst
+geïmplementeerd zijn in Agda en daarna als het ware vertaald zijn naar Haskell.
+Dit zorgt ervoor dat Agda als het ware bevoordeeld is om een elegante
+implementatie te hebben maar dat is irrelevant omdat het niet de bedoeling is
+een waardeoordeel te vellen. De gevalstudies dienen in de eerste plaats om te
+illustreren wat we met dependent types kunnen uitdrukken dat anders niet in de
+taal zelf uit te drukken is. De vergelijking tussen de twee talen is er vooral
+om aan te tonen dat deze manier van programmeren ook in een courante taal al
+mogelijk is. In hoofdstuk \ref{ch:agda-haskell} overlopen we de features die we
+gebruiken uit Agda en Haskell.
