@@ -97,10 +97,10 @@ wordt met een lege lijst als argument.  Dit is een heel eenvoudig voorbeeld en
 hieruit blijkt niet welke van de twee een betere manier is om lijsten voor te
 stellen.  Het laat wel zien wat het betekent voor een type om af te hangen van
 een waarde. Wat we ook zien, zowel in het type van \iagda{_∷_} als \iagda{head}
-is \iagda{∀ \{n\}}, de universele kwantor zorgt dat \iagda{n} eender wat kan
+is \iagda{∀ {n}}, de universele kwantor zorgt dat \iagda{n} eender wat kan
 zijn zolang het voldoet aan de eisen in de rest van het type. De accolades rond
 \iagda{n} en in het type van \iagda{head} ook rond het type van het volgende
-argument, \iagda{\{A : Set\}}, duidt aan dat deze argumenten impliciet zijn, ze
+argument, \iagda{{A : Set}}, duidt aan dat deze argumenten impliciet zijn, ze
 worden afgeleid uit de context, in dit geval bijvoorbeeld uit het type van het
 vector argument.
 
@@ -122,7 +122,8 @@ handiger omdat ze geen uitvoerige testen noodzakelijk maakt.
     Read    : ∀ {s} → Handle s → RA s
     Union   : ∀ {s} → RA s → RA s → RA s
     Diff    : ∀ {s} → RA s → RA s → RA s
-    Product : ∀ {s s'} → {_ : So (disjoint s s')} → RA s → RA s' → RA (append s s')
+    Product : ∀ {s s'} → {_ : So (disjoint s s')} → RA s → RA s'
+              → RA (append s s')
     Project : ∀ {s} → (s' : Schema) → {_ : So (sub s' s)} → RA s → RA s'
     Select  : ∀ {s} → Expr s BOOL → RA s → RA s
 \end{minted}
