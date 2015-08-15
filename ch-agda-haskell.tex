@@ -1,6 +1,9 @@
 \chapter{Programmeertalen}
 \label{ch:agda-haskell}
 
+
+\section{Inleiding}
+
 In dit hoofdstuk beschrijven we de programmeertalen die gebruikt zijn in de
 gevalstudies. Er moet ergens een grens getrokken worden die bepaald wat wel en
 niet uitgelegd wordt, deze thesis veronderstelt dat de lezer vertrouwd is met
@@ -81,28 +84,33 @@ index van het type \iagda{ℕ}, dit is de naam van het type voor natuurlijke
 getallen uit de standard library, het verschil tussen een index en een
 parameter is dat een index voor elke constructor kan variëren terwijl een
 parameter voor alle constructors hetzelfde is. Een type met indices noemen we
-ook wel een inductieve familie \ref{indfam}. De lege vector, \iagda{[]},
-heeft lengte nul, het type is \iagda{Vec A zero}: het is dus een vector van
-elementen van type \iagda{A} met lengte \iagda{zero}. De constructor die
-langere vectoren maakt, verwacht een element, \iagda{x} van type \iagda{A}, een
-vector met elementen van hetzelfde type \iagda{A} en een bepaalde lengte
-\iagda{n}, namelijk \iagda{xs} met als type \iagda{Vec A n}, en geeft een
-vector terug waarvan de lengte één groter is, \iagda{Vec A (suc n)}. De
-\iagda{head} functie, die het eerste element van een vector terug geeft kan dan
-eisen dat ze enkel werkt op vectoren met een lengte groter dan nul, vectoren
-met type \iagda{Vec A (suc n)}. Als de lengte niet in het type opgenomen is,
-kan een functie er ook geen voorwaarden aan opleggen. Zo moet de \ihask{head}
-functie voor gewone lijsten in Haskell een fout opwerpen wanneer ze opgeroepen
-wordt met een lege lijst als argument.  Dit is een heel eenvoudig voorbeeld en
+ook wel een inductive family \ref{indfam}. De lege vector, \iagda{[]}, heeft
+lengte nul, het type is \iagda{Vec A zero}: het is dus een vector van elementen
+van type \iagda{A} met lengte \iagda{zero}. De constructor die langere vectoren
+maakt, verwacht een element, \iagda{x} van type \iagda{A}, een vector met
+elementen van hetzelfde type \iagda{A} en een bepaalde lengte \iagda{n},
+namelijk \iagda{xs} met als type \iagda{Vec A n}, en geeft een vector terug
+waarvan de lengte één groter is, \iagda{Vec A (suc n)}. De \iagda{head}
+functie, die het eerste element van een vector terug geeft kan dan eisen dat ze
+enkel werkt op vectoren met een lengte groter dan nul, vectoren met type
+\iagda{Vec A (suc n)}. Als de lengte niet in het type opgenomen is, kan een
+functie er ook geen voorwaarden aan opleggen. Zo moet de \ihask{head} functie
+voor gewone lijsten in Haskell een fout opwerpen wanneer ze opgeroepen wordt
+met een lege lijst als argument.  Dit is een heel eenvoudig voorbeeld en
 hieruit blijkt niet welke van de twee een betere manier is om lijsten voor te
 stellen.  Het laat wel zien wat het betekent voor een type om af te hangen van
 een waarde. Wat we ook zien, zowel in het type van \iagda{_∷_} als \iagda{head}
-is \iagda{∀ {n}}, de universele kwantor zorgt dat \iagda{n} eender wat kan
-zijn zolang het voldoet aan de eisen in de rest van het type. De accolades rond
+is \iagda{∀ {n}}, de universele kwantor zorgt dat \iagda{n} eender wat kan zijn
+zolang het voldoet aan de eisen in de rest van het type. De accolades rond
 \iagda{n} en in het type van \iagda{head} ook rond het type van het volgende
 argument, \iagda{{A : Set}}, duidt aan dat deze argumenten impliciet zijn, ze
 worden afgeleid uit de context, in dit geval bijvoorbeeld uit het type van het
-vector argument.
+vector argument. Er is nog een ander soort impliciete argumenten in Agda,
+instance arguments, deze worden aangeduid met dubbele accolades en worden op
+een andere manier ingevuld, de typechecker zoekt naar een concrete instance in
+de context, als er verschillende mogelijkheden zijn leidt dat tot een typefout.
+Oorspronkelijk zijn instance arguments toegevoegd aan Agda als een eenvoudig
+alternatief voor typeclasses uit Haskell.
 
 Een meer uitgebreid voorbeeld uit een artikel dat het nut van dependent types
 goed uitlegt \ref{TPoP}, laat zien dat dependent types zeer expressief zijn.
@@ -193,6 +201,11 @@ is: \iagda{[_]}, dan moeten er spaties rond het argument, \iagda{[ x ]}, wat in
 het begin vreemd aanvoelt maar nodig is omdat \iagda{[x]} een geldige naam zou
 kunnen zijn voor een functie.
 
+\subsection{Versie}
+
+De gebruikte versies van Agda en de standard library in de rest van deze thesis
+zijn respectievelijk \texttt{2.4.2.2} en \texttt{0.9}.
+
 
 \section{Haskell}
 
@@ -202,12 +215,13 @@ aantal extensies nodig van GHC.
 
 \subsection{Waarden op typeniveau}
 
-Omdat we waarden nodig hebben op het niveau van types, wat dus eigenlijk types
-zijn, en die types zelf een type moeten hebben, wat in Haskell dus een kind is,
-maken we gebruik van de extensie DataKinds. Deze extensie laat ons toe om zelf
-kinds te definiëren met bijhorende types door onze gewone types te promoveren
-tot kinds en hun constructors te promoveren tot types. Een voorbeeld maakt dit
-veel duidelijker:
+Haskell heeft geen dependent types maar we hebben waarden nodig op het niveau
+van types, in Haskell moeten we die dus voorstellen door types, en die types
+moeten zelf een type hebben, wat in Haskell dus een kind is. Normaal kunnen we
+in Haskell geen kinds definiëren maar me de extensie DataKinds gaat dit wel.
+Deze extensie laat ons toe om zelf kinds te definiëren met bijhorende types
+door onze gewone types te promoveren tot kinds en hun constructors te
+promoveren tot types. Een voorbeeld maakt dit duidelijker:
 
 %----------------------------------------%
 \begin{minted}[fontsize=\small]{haskell}
@@ -234,8 +248,82 @@ volledig los van elkaar staan, buiten de naam. Er is ook geen waarde van het
 type \ihask{Z}. In één van de volgende hoofdstukken gebruiken we een techniek
 waarmee we de waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
 
-\subsection{Inductieve families}
+\subsection{Inductive families}
 
-\subsection{multiparam, flexinst, polykinds}
+In Haskell hebben we wel types die kunnen afhangen van andere types, een
+voorbeeld hiervan is het \ihask{Maybe a} type en dit geeft ons de indices uit
+Agda. Wat nog mist is de mogelijkheid om het type voor iedere constructor te
+variëren. Met behulp van generalised algebraic data types uit de GADTs extensie
+kunnen we dit wel. De KindSignatures extensie laat ons toe om bepaalde termen
+te annoteren met een kind zoals we nu bepaalde termen een type annotatie kunnen
+geven. Met deze twee extensies kunnen we eenvoudige inductive families
+implementeren in Haskell, als voorbeeld beschouwen we het type voor vectors:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{haskell}
+  data Vec :: * -> Nat -> * where
+    V0 :: Vec a Z
+    (:>) :: a -> Vec a n -> Vec a (S n)
+\end{minted}
+
+Het belangrijkste verschil met de definitie in Agda is dat het type van de
+elementen nu niet hetzelfde zou moeten zijn voor elke constructor. Haskell laat
+ons bijvoorbeeld toe te zeggen dat \ihask{V0} het type \ihask{Vec Int Z} heeft
+en dat \ihask{(:>)} een vector met type \ihask{Vec Char (S n)} oplevert. We
+moeten dus zelf beter opletten bij het definiëren van de types van de
+constructors.
+
+\subsection{Impliciete resolutie van een relatie}
+
+Een relatie tussen twee types kunnen we voorstellen met een nieuw type, laten
+we als voorbeeld de relatie tussen vlaggen en landen nemen:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{haskell}
+  data Flag = DrieKleur | StarsAndStripes | UnionJack
+
+  data Country = Belgium | USofA | UnitedKingdom
+
+  data FlagCountry :: Flag -> Country -> * where
+    Belg :: FlagCountry DrieKleur Belgium
+    Amer :: FlagCountry StarsAndStripes USofA
+    Engl :: FlagCountry UnionJack UnitedKingdom
+\end{minted}
+
+Als we nu in een type een vlag kennen en het land willen weten kunnen we dit
+type gebruiken om dit te weten te komen: \ihask{flag -> FlagCountry flag
+country -> country}, dit is eigenlijk niet geldig in Haskell maar het gaat om
+het idee. Dit is soms te expliciet omdat we wel in het type van de relatie
+geïnteresseerd zijn maar niet in de waarde zelf. In Haskell kunnen we
+gebruikmaken van typeclasses om informatie impliciet te houden, de typeclasses
+uit standaard Haskell laten maar een parameter toe. Omdat we voor een relatie
+twee parameters nodig hebben, maken we gebruik van de MultiParamTypeClasses
+extensie. De FlexibleInstances extensie laat ons toe om type variables te
+gebruiken in de \ihask{instance} declaraties. De bijhorende typeclass voor het
+vorige voorbeeld zou er als volgt uitzien:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{haskell}
+  class FlgCntry (f :: Flag) (c :: Country)
+  instance FlgCntry DrieKleur Belgium
+  instance FlgCntry StarsAndStripes USofA
+  instance FlgCntry UnionJack UnitedKingdom
+\end{minted}
+
+Het type van een functie die hiervan gebruik maakt, wordt niet minder expliciet
+maar we moeten geen argument meer meegeven waar weinig informatie in zit:
+\ihask{FlgCntry flag country => flag -> country}, dit is weer geen geldige
+Haskell code maar het gaat om het idee.
+
+\subsection{Versie}
+
+De gebruikte versie van GHC in deze thesis is \texttt{7.6.3}.
 
 
+\section{Besluit}
+
+Met de kennis van de twee talen die we in dit hoofdstuk opgebouwd hebben,
+kunnen we beginnen aan de gevalstudies. In de eerste gevalstudie bekijken we
+een formalisering van de paden die een spelfiguur aflegt om zo fouten te kunnen
+voorkomen. In de tweede gevalstudie implementeren we een soort zoekbomen,
+red-black trees, met statische verificatie van de invarianten.
