@@ -201,6 +201,17 @@ is: \iagda{[_]}, dan moeten er spaties rond het argument, \iagda{[ x ]}, wat in
 het begin vreemd aanvoelt maar nodig is omdat \iagda{[x]} een geldige naam zou
 kunnen zijn voor een functie.
 
+\subsection{Modules}
+
+Agda heeft net als Haskell modules om code in te kunnen delen in verschillende
+logische eenheden die eventueel over verschillende bestanden verdeeld kunnen
+worden. In Agda kunnen we modules ook parametriseren, dit gaat in Haskell niet
+maar is wel terug te vinden in bijvoorbeeld de ML \ref{ml} familie van talen.
+Om een geparametriseerde module te gebruiken moeten we er waarden aan meegeven
+overeenkomstig de types van de parameters. Op deze manier kunnen we er
+bijvoorbeeld voor zorgen dat een module met sorteerfuncties enkel gebruikt
+wordt voor elementen die een orderelatie hebben.
+
 \subsection{Versie}
 
 De gebruikte versies van Agda en de standard library in de rest van deze thesis
