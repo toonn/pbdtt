@@ -12,13 +12,16 @@ vele van de Mariospellen zogenaamde \emph{glitches}, fouten die uitgebuit
 kunnen worden om bepaalde acties uit te voeren die normaal moeilijk of
 onmogelijk zijn. Zo is er bijvoorbeeld een fout met een Koopa Troopa waardoor
 Mario aan het einde van het level over de vlag kan springen, dit is normaal
-niet mogelijk. Deze fout, te zien in figuur \ref{koopaglitch} is eigenlijk de
-precieze inspiratie van deze gevalstudie.
+niet mogelijk. De precieze fout is moeilijk uit te leggen maar ze is mogelijk
+omdat een Koopa Troopa als het ware onder het level kan rondlopen, dit is in
+figuur \ref{koopaglitch} te zien. Deze fout is eigenlijk de precieze inspiratie
+van deze gevalstudie.
 
 \begin{figure}
   \centering
   \includegraphics[width=\linewidth]{figures/KoopaTroopaGlitch}
-  \caption{Onder Mario is nog net het hoofd van een Koopa Troopa te zien}
+  \caption{Onder Mario is nog net het hoofd van een Koopa Troopa te zien
+           \ref{marioglitchyoutube}}
   \label{koopaglitch}
 \end{figure}
 
@@ -29,7 +32,20 @@ afgrond een obstakel. Dit heeft tot gevolg dat rode Koopa Troopas heen en weer
 patrouilleren en groene Koopa Troopas eerder trapsgewijs naar beneden vallen
 tot ze uit het beeld verdwijnen. Door deze regels uit te drukken in de types,
 in plaats van in de spellogica, kunnen we een fout zoals die in figuur
-\ref{koopaglitch} te zien is, voorkomen.
+\ref{koopaglitch} te zien is, voorkomen. In figuur \ref{kooparedgreen} zijn een
+aantal voorbeeldpaden geïllustreerd.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\textwidth]{figures/koopatroopa-red}
+  \end{subfigure}
+  \begin{subfigure}{0.49\textwidth}
+    \includegraphics[width=\textwidth]{figures/koopatroopa-green}
+  \end{subfigure}
+  \caption{Mogelijke paden voor rode en groene Koopa Troopas}
+  \label{kooparedgreen}
+\end{figure}
 
 
 \section{Koopa Troopas in Agda}
@@ -253,4 +269,3 @@ mixfix functies. Zoals we kunnen zien is het level redelijk herkenbaar ook al
 werken we eigenlijk gewoon met tekst, dit is een voordeel van werken met de
 volledige unicode karakterset.
 
-TODO figures van de koopa troopa paden
