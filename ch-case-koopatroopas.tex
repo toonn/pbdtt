@@ -57,7 +57,7 @@ De code begint met een module declaratie, deze is niet verplicht maar wel
 nuttig omdat ze het mogelijk maakt de code te gebruiken in andere programma's.
 Daarna importeren we een aantal eenvoudige types uit de standaard bibliotheek.
 
-\inputagda[firstline=8, lastline=15]{agda-casestt/koopa.agda}
+\inputagda[firstline=8, lastline=15, breaklines]{agda-casestt/koopa.agda}
 
 \iagda{Data.Nat} bevat een unaire voorstelling van natuurlijke getallen die we
 gaan gebruiken voor coördinaten. \iagda{Data.Fin} definieert een type voor
@@ -82,12 +82,12 @@ zijn, kan Agda een fout geven als we ze omwisselen. Vervolgens wordt de module
 geopend zodat we het type en de functie kunnen gebruiken zonder de namen te
 moeten kwalificeren met de naam van de module.
 
-\inputagda[firstline=17, lastline=23]{agda-casestt/koopa.agda}
+\inputagda[firstline=17, lastline=23, breaklines]{agda-casestt/koopa.agda}
 
 Hierna begint de oplossing van het probleem eigenlijk pas echt. We definiëren
 een aantal types waarmee we de Koopa Troopas en de levels kunnen voorstellen.
 
-\inputagda[firstline=25, lastline=30]{agda-casestt/koopa.agda}
+\inputagda[firstline=25, lastline=30, breaklines]{agda-casestt/koopa.agda}
 
 Koopa Troopas kunnen twee kleuren hebben dus we definiëren een type
 \iagda{Color} met een constructor voor elke kleur. Agda laat ons toe om
@@ -106,7 +106,7 @@ Het volgende stuk bevat nog een aantal type declaraties. Hier definiëren we
 posities met alle informatie die we later nodig hebben om te bepalen op welke
 posities een Koopa Troopa mag staan.
 
-\inputagda[firstline=32, lastline=48]{agda-casestt/koopa.agda}
+\inputagda[firstline=32, lastline=48, breaklines]{agda-casestt/koopa.agda}
 
 Elke positie is ofwel lucht ofwel vast: grond of muur of iets dergelijks. Het
 type \iagda{Material} stelt deze toestanden voor. Het type \iagda{Clearance}
@@ -129,7 +129,7 @@ andere manier differentiëren en het enige dat verschilt tussen de Koopa Troopas
 is hun kleur wat dus de meest logische bepalende factor van de
 \iagda{Clearance} wordt.
 
-\inputagda[firstline=50, lastline=52]{agda-casestt/koopa.agda}
+\inputagda[firstline=50, lastline=52, breaklines]{agda-casestt/koopa.agda}
 
 In plaats van groen en rood gelijk te stellen aan respectievelijk een hoge en
 een lage \iagda{Clearance}, werkt de constructor \iagda{<red>} voor beide
@@ -144,7 +144,7 @@ het type voor te stellen als een pijl, \iagda{_c>_}, van een kleur naar een
 De volgende twee definities zijn eigenlijk het belangrijkste deel van de
 oplossing en steunen op alle voorgaande concepten.
 
-\inputagda[firstline=54, lastline=61]{agda-casestt/koopa.agda}
+\inputagda[firstline=54, lastline=61, breaklines]{agda-casestt/koopa.agda}
 
 Het \iagda{_follows_⟨_⟩} type is op het eerste zicht waarschijnlijk een beetje
 vreemd, dit is omdat de waarden van het type eigenlijk minder belangrijk zijn
@@ -172,7 +172,7 @@ zijn dat ook de enige die kunnen vallen. Nogmaals kunnen we alleen vallen van
 een positie in lucht naar een positie in lucht, Koopa Troopas kunnen dus niet
 de grond in vallen.
 
-\inputagda[firstline=64, lastline=69]{agda-casestt/koopa.agda}
+\inputagda[firstline=64, lastline=69, breaklines]{agda-casestt/koopa.agda}
 
 Het type waarmee we de paden voorstellen die Koopa Troopas kunnen afleggen,
 \iagda{Path}, moet ervoor zorgen dat enkel geldige paden worden opgesteld voor
@@ -202,13 +202,13 @@ de geldigheid van de paden afhangt van een goede bepaling van de
 een pad en daarna een mogelijke oplossing voor een juiste bepaling van de
 \iagda{Clearance} voor elke positie.
 
-\inputagda[firstline=71, lastline=74]{agda-casestt/koopa.agda}
+\inputagda[firstline=71, lastline=74, breaklines]{agda-casestt/koopa.agda}
 
 Om ervoor te zorgen dat de \iagda{Clearance} juist bepaald wordt, gaan we
 een functie gebruiken die de regels voor de bepaling van de \iagda{Clearance}
 van een positie uitdrukt.
 
-\inputagda[firstline=78, lastline=86]{agda-casestt/koopa.agda}
+\inputagda[firstline=78, lastline=86, breaklines]{agda-casestt/koopa.agda}
 
 De \iagda{matterToPosVec} functie verwacht twee vectoren van dezelfde lengte
 met \iagda{Material}s in en twee coördinaten die aangeven bij welke positie het
@@ -233,7 +233,7 @@ gebruiken. Uiteindelijk willen we een matrix van posities die het level
 voorstelt maar omdat het voor de recursie beter uitkomt als we met een vector
 van vectoren werken voor de invoer, gebruiken we geen matrix voor de invoer.
 
-\inputagda[firstline=88, lastline=98]{agda-casestt/koopa.agda}
+\inputagda[firstline=88, lastline=98, breaklines]{agda-casestt/koopa.agda}
 
 De functie \iagda{matterToPosVecs} maakt gebruik van de vorige functie om een
 vector van vectoren van \iagda{Material}s om te zetten in een vector van
@@ -258,14 +258,151 @@ Met deze functies kunnen we gemakkelijk een level opstellen door de juiste
 de juiste \iagda{Clearance} bepaalt voor elke positie. Om onze notatie iets
 visueler te maken definiëren we nog twee functies met een unicode symbool.
 
-\inputagda[firstline=100, lastline=114]{agda-casestt/koopa.agda}
+\inputagda[firstline=100, lastline=114, breaklines]{agda-casestt/koopa.agda}
 
 De functies \iagda{□_} en \iagda{■_} zijn gewoon afkortingen voor
 respectievelijk een vector die begint met \iagda{gas} en nog een staart
 verwacht en een vector die begint met \iagda{solid} en nog een staart verwacht.
-Deze functies zijn gedefinieerd met een underscore terwijl ze toch gewoon prefix
-functies zijn omdat de \iagda{infixr} declaratie enkel van toepassing is op
-mixfix functies. Zoals we kunnen zien is het level redelijk herkenbaar ook al
-werken we eigenlijk gewoon met tekst, dit is een voordeel van werken met de
-volledige unicode karakterset.
+Deze functies zijn gedefinieerd met een underscore ook al zijn ze gewoon prefix
+functies omdat de \iagda{infixr} declaratie enkel van toepassing is op mixfix
+functies. Zoals we kunnen zien is het level, dat tevens in figuur
+\ref{kooparedgreen} te zien is, redelijk herkenbaar ook al stellen we het
+gewoon voor met tekst, dit is een voordeel van werken met de volledige unicode
+karakterset.
+
+Het enige dat ons nu nog rest te definiëren zijn een aantal hulpfuncties om
+natuurlijke getallen om te zetten in getallen van het type \iagda{Fin n} omdat
+we die niet met cijfers kunnen schrijven.
+
+\inputagda[firstline=116, lastline=130, breaklines]{agda-casestt/koopa.agda}
+
+De eerste functie, \iagda{_<'_}, vergelijkt twee natuurlijke getallen en geeft
+een type terug, in een taal waar types geen waarden zijn gaat dit meestal niet.
+Als het eerste getal strikt kleiner is dan het tweede is dit type \iagda{⊤},
+anders is het type \iagda{⊥}. Een element van het type \iagda{⊤} kan altijd
+impliciet ingevuld worden, er is er namelijk maar één: \iagda{tt}. Een element
+van het type \iagda{⊥} kan nooit gegeven worden want er zijn er geen.
+Van deze functie maken we gebruik in het type van \iagda{fromNat}, een functie
+die een natuurlijk getal omzet in een element van \iagda{Fin n}. We kunnen een
+natuurlijk getal \iagda{k} maar omzetten in een \iagda{Fin n} als \iagda{k}
+strikt kleiner is dan \iagda{n}. Het type \iagda{k <' n} is ofwel gelijk aan
+het type \iagda{⊤} ofwel aan het type \iagda{⊥}, in het eerste geval moeten we
+dus geen expliciete waarde geven, in het tweede geval kunnen we geen waarde
+geven en dus kunnen we de functie ook niet oproepen met een \iagda{k} die we
+nooit kunnen omzetten in een \iagda{Fin n}. Op deze manier kan de typechecker
+ons waarschuwen wanneer we dit ergens wel proberen doen. In deze functie zien
+we nog iets nieuws, de eerste vergelijking heeft geen rechterzijde. Dit is
+omdat er geen waarde bestaan van het type \iagda{Fin n}, dat isomorf is met het
+type \iagda{⊥}. Omdat de \iagda{n} in \iagda{Fin n} een natuurlijk getal is, is
+\iagda{0} niet uitgesloten en omdat Agda een totale programmeertaal is moeten
+we voor elke mogelijke waarde van het argument \iagda{n} een antwoord bieden.
+In dit geval is het type \iagda{k <' n} sowieso gelijk aan \iagda{⊥} en omdat
+we geen waarde van dat type kunnen krijgen kunnen we gebruik maken van het
+zogenaamde \emph{absurd} pattern: \iagda{{}} of \iagda{()}. Het absurd pattern
+geeft aan dat er onmogelijk een waarde van het juiste type bestaat, de
+typechecker moet dit wel kunnen nagaan dus dit werkt alleen voor types die
+eenvoudig genoeg zijn. Als Agda overtuigd is dat er geen waarde bestaat, moeten
+we ook geen rechterzijde opgeven. In de derde vergelijking zien we nog dat het
+\emph{bewijs} dat \iagda{k} kleiner is dan \iagda{n} expliciet doorgegeven
+wordt en dus geldig blijft voor het recursieve geval, het is tenslotte ook maar
+een eenvoudige waarde, \iagda{tt}. De functie \iagda{f} is slechts een
+afkorting voor \iagda{fromNat}. De functie \iagda{p} is een afkorting voor
+\iagda{lookup} waarbij de coördinaten omgewisseld zijn voor de leesbaarheid en
+het level niet moet opgegeven worden omdat dat in alle voorbeelden hetzelfde
+is.
+
+Met al deze extra definities kunnen we nu paden op een compacte manier
+definiëren zoals we in de rest van de voorbeelden zien.
+
+\inputagda[firstline=132, lastline=144, breaklines]{agda-casestt/koopa.agda}
+
+\iagda{red_path_one} en \iagda{red_path_two} stellen de paden voor die door de
+rode Koopa Troopas afgelegd wordt in figuur \ref{kooparedgreen}, het vakje
+linksonder heeft coördinaat $(0,0)$, de x-as loopt horizontaal en de y-as
+verticaal. Voorbeelden van paden waar niets mis mee is zijn eigenlijk niet zo
+interessant, die kunnen in het originele spel ook voorgesteld worden. Het wordt
+pas interessant als we proberen om een ongeldig pad op te stellen want dat is
+wat we proberen te voorkomen.
+
+\inputagda[firstline=1, lastline=12, breaklines]{agda-casestt/koopa-errors.agda}
+
+De fout bij \iagda{red_nopath_one} ziet eruit als volgt:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  gas != solid of type Material
+  when checking that the expression stay has type
+  pos 0 (suc zero) gas Low follows p (f 0) (f 1) ⟨ Red ⟩
+\end{minted}
+
+Agda geeft aan dat de positie in het type van \iagda{stay} niet overeenkomt met
+de positie, door \iagda{stay} te gebruiken op positie $(0,1)$ zou het type
+\iagda{pos 0 1 solid Ultimate follows pos 0 1 solid Ultimate ⟨ Red ⟩} moeten
+zijn maar dat is niet toegelaten in de definitie van de constructor.
+Eigenlijk verwachten we een fout daar waar we een muur in lopen en hier krijgen
+we de fout pas te zien als we al in een muur staan. Dit is omdat de
+\iagda{_↠⟨_⟩_} constructor rechts associatief is, dus de eerste fout die Agda
+tegenkomt zit zo ver mogelijk vanachter in het pad.
+
+In de fout voor \iagda{red_nopath_two} kunnen we zien dat de beweging waarbij
+we een muur zouden inlopen wel als fout wordt gezien:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  gas != solid of type Material
+  when checking that the expression p (f 1) (f 1) ↠⟨ back ⟩ [] has
+  type Path (Red KT) (p (f 1) (f 1)) (p (f 0) (f 1))
+\end{minted}
+
+Deze fout is zo goed als hetzelfde als de vorige, alleen gaat het nu om de
+\iagda{back} constructor en is de expressie waar de fout zich bevindt niet even
+ver gereduceerd omdat het type van \iagda{back} ingewikkelder is.
+
+Een pad voor een rode Koopa Troopa moet ook ongeldig zijn als een Koopa Troopa
+zou vallen bij het afleggen van het pad:
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  Low != High of type Clearance
+  when checking that the expression p (f 4) (f 1) ↠⟨ next ⟩ [] has
+  type Path (Red KT) (p (f 4) (f 1)) (p (f 5) (f 1))
+\end{minted}
+
+Als een rode Koopa Troopa van een afgrond afloopt, is het niet het
+\iagda{Material} dat in de weg zit, het is namelijk allemaal lucht, maar wel
+het feit dat een rode Koopa Troopa niet de juiste \iagda{Clearance} heeft.
+
+Voor een groene Koopa Troopa kunnen we opnieuw geldige paden opstellen:
+
+\inputagda[firstline=159, lastline=184, breaklines]{agda-casestt/koopa.agda}
+
+In \iagda{green_path_one} zien we één van de geldige paden voor rode Koopa
+Troopas terugkomen. Een pad dat geldig is voor een rode Koopa Troopa is ook
+geldig voor een groene Koopa Troopa. In het oorspronkelijke spel zijn Koopa
+Troopas ook obstakels voor elkaar, op die manier zou een groene Koopa Troopa
+dus beperkt kunnen worden tot een pad dat een rode ook kan afleggen. Evenzeer
+is een pad voor een rode Koopa Troopa dat omkeert voor er een obstakel in de
+weg zit, mogelijk. Opnieuw kan dit nuttig zijn, bijvoorbeeld om de Koopa
+Troopas actief de speler te laten achtervolgen als die in de buurt komt,
+waarbij ze dus vroeger dan nodig omkeren. In \iagda{green_path_two} zien we het
+langere pad dat in figuur \ref{kooparedgreen} geïllustreerd is.
+
+Voor een groen Koopa Troopa is het geen fout als het pad van een afgrond af
+gaat en dan naar beneden valt. Maar er treedt zoals verwacht nog wel een fout
+op als we proberen een muur in te lopen:
+
+\inputagda[firstline=14, lastline=16, breaklines]{agda-casestt/koopa-errors.agda}
+
+%----------------------------------------%
+\begin{minted}[fontsize=\small]{agda}
+  gas != solid of type Material
+  when checking that the expression p (f 1) (f 1) ↠⟨ back ⟩ [] has
+  type Path (Green KT) (p (f 1) (f 1)) (p (f 0) (f 1))
+\end{minted}
+
+Deze fout is indentiek als die voor \iagda{red_nopath_two}. In het volgende
+deel kijken we hoe we dit model in Haskell kunnen implementeren.
+
+
+\section{Koopa Troopas in Haskell}
 
