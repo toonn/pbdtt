@@ -270,7 +270,7 @@ functies. Zoals we kunnen zien is het level, dat tevens in figuur
 gewoon voor met tekst, dit is een voordeel van werken met de volledige unicode
 karakterset.
 
-Het enige dat ons nu nog rest te definiëren zijn een aantal hulpfuncties om
+Het enige dat ons nu nog rest te definiëren zijn een aantal hulp functies om
 natuurlijke getallen om te zetten in getallen van het type \iagda{Fin n} omdat
 we die niet met cijfers kunnen schrijven.
 
@@ -391,7 +391,7 @@ Voor een groen Koopa Troopa is het geen fout als het pad van een afgrond af
 gaat en dan naar beneden valt. Maar er treedt zoals verwacht nog wel een fout
 op als we proberen een muur in te lopen:
 
-\inputagda[firstline=14, lastline=16, breaklines]{agda-casestt/koopa-errors.agda}
+\inputagda[firstline=14,lastline=16,breaklines]{agda-casestt/koopa-errors.agda}
 
 %----------------------------------------%
 \begin{minted}[fontsize=\small]{agda}
@@ -400,9 +400,91 @@ op als we proberen een muur in te lopen:
   type Path (Green KT) (p (f 1) (f 1)) (p (f 0) (f 1))
 \end{minted}
 
-Deze fout is indentiek als die voor \iagda{red_nopath_two}. In het volgende
-deel kijken we hoe we dit model in Haskell kunnen implementeren.
+Deze fout is identiek aan die voor \iagda{red_nopath_two}. In het volgende
+deel bespreken we de implementatie van dit model in Haskell.
 
 
 \section{Koopa Troopas in Haskell}
+
+In Haskell beginnen we de code met de LANGUAGE pragma's die besproken zijn in
+hoofdstuk \ref{ch:agda-haskell}. Daarna komt de module declaratie, hier zien we
+voor de eerste keer dat Haskell redelijk strikte regels heeft over naamgeving,
+modules types en constructors moeten met een hoofdletter beginnen en functies
+met een kleine letter.
+
+\inputhaskell[firstline=8, lastline=11, breaklines]{haskell-casestt/koopa.hs}
+
+Om te beginnen moeten we een aantal types die we in Agda uit de standard
+library kunnen halen zelf implementeren or is bijvoorbeeld geen erg grote nood
+aan een unaire voorstelling van natuurlijke getallen in Haskell. De naamgeving
+en technieken die we hier gebruiken komen uit een artikel \ref{hasochism} over
+dependently typed programmeren in Haskell met de titel: "Hasochism: The
+Pleasure and Pain of Dependently Typed Haskell Programming." Het wordt redelijk
+snel duidelijk waarom het artikel die titel heeft.
+
+\inputhaskell[firstline=13, lastline=24, breaklines]{haskell-casestt/koopa.hs}
+
+We beginnen met het definiëren van onze unaire natuurlijke getallen, dankzij de
+datatype promotion van de DataKinds extensie hebben we nu ook meteen unaire
+natuurlijke getallen op het typeniveau. Wat we nog missen is een verbinding
+tussen waarden op het waardeniveau en waarden op het typeniveau zoals die er
+wel is in Agda, daar kunnen we een argument van de functie ook in het type
+gebruiken. In Haskell kunnen we dit niet echt doen maar we kunnen het wel
+imiteren met een zogenaamde singleton constructie. Dit zien we in de definitie
+van \ihask{Natty n}, elke waarde die we opstellen heeft een ander type:
+\ihask{Zy} heeft type \ihask{Natty Z} en \ihask{Sy Zy} heeft type \ihask{Natty
+(S Z)}. Omdat elk type \ihask{Natty n} maar één waarde bevat, heeft deze
+constructie de benaming singleton gekregen. De functie \ihask{natter}, ongeveer
+te lezen als "meer Nat-achtig," zet een \ihask{Natty n} om in een \ihask{Nat},
+hierbij werpen we als het ware informatie op het typeniveau weg. De omgekeerde
+conversie gaat niet zomaar, er is geen manier om statisch te bepalen wat de
+\ihask{n} in het return type \ihask{Natty n} zou moeten zijn. Om dit bij
+benadering toch te kunnen doen hebben we een derde type nodig, \ihask{NATTY}.
+Dit type verstopt als het ware de typeniveau informatie van een \ihask{Natty
+n}. Nu kunnen we de functie \ihask{nattyer}, "meer Natty-achtig," wel
+schrijven. De definitie is eenvoudig, in het recursieve geval moeten we een
+pattern match doen op de recursieve oproep om met de eigenlijke waarde van de
+\ihask{Natty n} te kunnen werken.
+
+Haskell ontbreekt logischerwijs tevens een type voor begrensde natuurlijke
+getallen. Deze keer kunnen we de extra types niet definiëren omdat Haskell het
+\ihask{Fin n} type niet kan promoveren. De DataKinds extensie promoveert enkel
+types met argumenten met kind \ihask{*}.
+
+\inputhaskell[firstline=27, lastline=35, breaklines]{haskell-casestt/koopa.hs}
+
+De definitie voor \ihask{Fin n} is identiek aan die uit de Agda standard
+library voor zover dat mogelijk is. De functie \ihask{intToFin} dient ongeveer
+hetzelfde doel als de \iagda{fromNat} functie uit de Agda code. Omdat Haskell
+geen cijfers toelaat voor natuurlijke getallen, vertrekken we van het
+\ihask{Integer} type. Dit brengt met zich mee dat we negatieve getallen
+toelaten, hiervoor werpen we gewoon een fout op.
+
+Vervolgens is er het type \ihask{Vec} dat ook weer logischerwijs niet in
+Haskell aanwezig is met de bijhorende functies.
+
+\inputhaskell[firstline=38, lastline=58, breaklines]{haskell-casestt/koopa.hs}
+
+Haskell laat binaire infix constructors toe door hun naam te beginnen met een
+dubbelpunt, toevallig kunnen we zo bijna dezelfde notatie gebruiken als in
+Agda. \ihask{vlookup} haalt een element uit een vector met behulp van een
+begrensd getal dus we sluiten uit dat een index te groot of te klein is.
+\ihask{vreplicate} stelt een vector op met een bepaald aantal herhalingen van
+een element, we hebben hier een \ihask{Natty n} nodig omdat we de waarde
+\ihask{n} moeten kennen voor het type van de vector die we willen teruggeven.
+\ihask{vreverse} keert de volgorde van de elementen in een vector om.
+
+Nu kunnen we ook het \ihask{Matrix} type definiëren. Dit type en de voorgaande
+types zijn niet gedefinieerd in submodules zoals we \iagda{Matrix} gedefinieerd
+hebben in Agda omdat Haskell geen concept heeft van submodules. We zouden deze
+types allemaal in modules in hun eigen bestanden kunnen definiëren maar omdat
+het weinig code is en slechts tot voorbeeld dient, is dit achterwege gelaten.
+
+\inputhaskell[firstline=61, lastline=65, breaklines]{haskell-casestt/koopa.hs}
+
+Zowel het \ihask{Matrix} type als de \ihask{mlookup} functie gelijken sterk op
+hun tegenhangers in Agda. Het grootste verschil is dat we in Haskell met
+polymorfisme werken daar waar we in Agda gewoonlijk impliciete argumenten
+gebruiken.
+
 

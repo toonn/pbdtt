@@ -1,3 +1,6 @@
 [submodule "agda-casestt"]
 	path = agda-casestt
 	url = github:toonn/agda-casestt.git
+[submodule "haskell-casestt"]
+	path = haskell-casestt
+	url = github:toonn/haskell-casestt.git
