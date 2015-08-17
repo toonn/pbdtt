@@ -9,11 +9,11 @@ gevalstudies. Er moet ergens een grens getrokken worden die bepaald wat wel en
 niet uitgelegd wordt, deze thesis veronderstelt dat de lezer vertrouwd is met
 getypeerd functioneel programmeren. Omdat Agda minder bekend is, is de uitleg
 hierover uitgebreider dan die over Haskell. Het enige dat we voor Haskell
-moeten uitleggen zijn namelijk de extensies van GHC \ref{ghc} die we gebruiken.
-Merk op dat overal waar code getoond wordt, het symbool
-{\tiny\ensuremath{\hookrightarrow}} gebruikt wordt om aan te duiden dat een
-regel die te lang was op die regel verder gaat, dit resulteert niet altijd in
-geldige code dus bij het overnemen moet hierop gelet worden.
+moeten uitleggen zijn namelijk de extensies van de Glasgow Haskell Compiler
+\ref{ghc}, GHC, die we gebruiken. Merk op dat overal waar code getoond wordt,
+het symbool {\tiny\ensuremath{\hookrightarrow}} gebruikt wordt om aan te duiden
+dat een regel die te lang was op die regel verder gaat, dit resulteert niet
+altijd in geldige code dus bij het overnemen moet hierop gelet worden.
 
 
 \section{Agda}
@@ -24,10 +24,11 @@ vele andere talen met dependent types ligt de nadruk ook eerder op het gebruik
 als bewijsassistent dan wel als programmeertaal.
 
 \subsection{Dependent Types}
+\label{sec:indfamagda}
 
 Het belangrijkste verschil tussen Agda en andere functionele programmeertalen
 is het typesysteem. Een dependent type is een type dat afhangt van een waarde.
-De voorgaande zin legt eigenlijk alles uit dat belangrijk is aan dependent
+De voorgaande zin legt eigenlijk alles uit wat belangrijk is aan dependent
 types maar iemand die nog niet vertrouwd is met dependent types zal hier weinig
 van opsteken. Vandaar overlopen we een aantal voorbeelden in Agda: eerst om de
 syntax te verduidelijken, daarna om te illustreren wat dependent types nu
@@ -55,10 +56,10 @@ eigenlijk \iagda{Set₀} is. Het type van \iagda{Set₀} is \iagda{Set₁} en de
 hiërarchie gaat in theorie oneindig ver door. Haskell heeft gelijkaardige
 concepten maar daar gaat de hiërarchie niet erg ver door. De hiërarchie gaat
 als volgt in Haskell, met de Engelse termen omdat ze niet allemaal een goede
-vertaling hebben: een value heeft een type, een type heeft een kind, een kind
-heeft een sort en hier stopt de hiërarchie. Het dichtste equivalent van
-\iagda{Set} is in Haskell het kind \ihask{*}, \ihask{*} heeft nog sort
-\ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
+vertaling hebben: een value heeft een type, een type heeft een \emph{kind}, een
+\emph{kind} heeft een sort en hier stopt de hiërarchie. Het dichtste equivalent
+van \iagda{Set} is in Haskell het \emph{kind} \ihask{*}, \ihask{*} heeft nog
+sort \ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
 \ihask{BOX} enkel en alleen een intellectueel concept is, het is niet uit te
 drukken in Haskell zelf.  Het tweede verschil met een type declaratie in een
 taal zoals Haskell is dat we het type van elke constructor moeten opgeven, voor
@@ -143,21 +144,22 @@ Het type \iagda{Schema} stelt een schema van een relatie voor, door dit als
 index op te nemen, kunnen we bepaalde eisen stellen aan de schema's waarop een
 relationele expressie werkt. De \iagda{Read} constructor gelijkt een beetje op
 een lege lijst omdat die aan de basis van elke relationele expressie moet
-liggen, voor alle andere constructors voor een relationele expressie hebben we
+liggen, voor alle andere constructors van een relationele expressie hebben we
 al een relationele expressie nodig. \iagda{Read} bevat de informatie die
 aangeeft in welke database de relatie te vinden is in een \iagda{Handle}. Zo'n
 \iagda{Handle} heeft tevens een schema als index en kunnen we enkel opstellen
 als de database inderdaad een relatie heeft die aan het schema voldoet. Voor de
 unie van twee relaties, \iagda{Union}, en het verschil tussen twee relaties,
 \iagda{Diff}, eisen we dat de schemas overeenkomen: een relatie kan maar een
-unie zijn van twee relaties als alle attributen overeenkomen, eigenlijk moeten
+unie zijn van twee relaties als alle attributen overeenkomen. Eigenlijk moeten
 de schema's niet hetzelfde zijn maar mogen ze permutaties van elkaar zijn maar
-dit kan opgelost worden door de implementatie van \iagda{Schema}. De
-constructor voor het cartesisch product, \iagda{Product}, heeft een impliciet
-argument van het type \iagda{So (disjoint s s')}, de underscore duidt aan dat
-we het argument niet gebruiken in de rest van het type maar moet er staan omdat
-we een type van een impliciet argument niet zonder een variabele kunnen
-opgeven. Het type \iagda{So (disjoint s s')} zorgt ervoor dat de schemas
+dit kan opgelost worden door de implementatie van \iagda{Schema} als een data
+type dat dezelfde vorm heeft in welke volgorde de elementen ook worden
+toegevoegd. De constructor voor het cartesisch product, \iagda{Product}, heeft
+een impliciet argument van het type \iagda{So (disjoint s s')}, de underscore
+duidt aan dat we het argument niet gebruiken in de rest van het type maar moet
+er staan omdat we een type van een impliciet argument niet zonder een variabele
+kunnen opgeven. Het type \iagda{So (disjoint s s')} zorgt ervoor dat de schemas
 \iagda{s} en \iagda{s'} disjunct zijn omdat een relatie geen twee attributen
 met dezelfde naam kan hebben en een cartesisch product geen join is. Verder
 zien we dat \iagda{Product} een relationele expressie opstelt waarvan het
@@ -209,8 +211,9 @@ kunnen zijn voor een functie.
 Agda heeft net als Haskell modules om code in te kunnen delen in verschillende
 logische eenheden die eventueel over verschillende bestanden verdeeld kunnen
 worden. In Agda kunnen we modules ook parametriseren, dit gaat in Haskell niet
-maar is wel terug te vinden in bijvoorbeeld de ML \ref{ml} familie van talen.
-Om een geparametriseerde module te gebruiken moeten we er waarden aan meegeven
+maar is wel terug te vinden in bijvoorbeeld de ML \ref{sml} \ref{ocaml} familie
+van talen, die net als Haskell statisch getypeerd en functioneel zijn. Om een
+geparametriseerde module te gebruiken moeten we er waarden aan meegeven
 overeenkomstig de types van de parameters. Op deze manier kunnen we er
 bijvoorbeeld voor zorgen dat een module met sorteerfuncties enkel gebruikt
 wordt voor elementen die een orderelatie hebben.
@@ -231,11 +234,11 @@ aantal extensies nodig van GHC.
 
 Haskell heeft geen dependent types maar we hebben waarden nodig op het niveau
 van types, in Haskell moeten we die dus voorstellen door types, en die types
-moeten zelf een type hebben, wat in Haskell dus een kind is. Normaal kunnen we
-in Haskell geen kinds definiëren maar me de extensie DataKinds gaat dit wel.
-Deze extensie laat ons toe om zelf kinds te definiëren met bijhorende types
-door onze gewone types te promoveren tot kinds en hun constructors te
-promoveren tot types. Een voorbeeld maakt dit duidelijker:
+moeten zelf een type hebben, wat in Haskell dus een \emph{kind} is. Normaal
+kunnen we in Haskell geen \emph{kinds} definiëren maar met de extensie DataKinds
+gaat dit wel.  Deze extensie laat ons toe om zelf \emph{kinds} te definiëren
+met bijhorende types door onze gewone types te promoveren tot \emph{kinds} en
+hun constructors te promoveren tot types. Een voorbeeld maakt dit duidelijker:
 
 %----------------------------------------%
 \begin{minted}[fontsize=\small]{haskell}
@@ -248,19 +251,20 @@ promoveren tot types. Een voorbeeld maakt dit duidelijker:
 \end{minted}
 
 We definiëren gewoon een type voor natuurlijke getallen en door de DataKinds
-extensie wordt dit type een kind en de constructors types. Het kind \ihask{Nat}
-is dus het kind van twee types namelijk \ihask{Z} en \ihask{S Nat}. De
-\ihask{Nat} in \ihask{S Nat} is opnieuw het kind Nat niet het type. Omdat
-dezelfde namen voor verschillende concepten af en toe verwarrend kunnen zijn en
-het niet onmogelijk is dat we al een type \ihask{Z} gedefinieerd hadden, worden
-types en constructors ook altijd gepromoveerd tot kinds en types die beginnen
-met een apostrophe. Het type \ihask{Nat} wordt bijvoorbeeld altijd gepromoveerd
-tot de kind \ihask{'Nat} en de constructor \ihask{Z} tot het type \ihask{'Z}.
-Met deze extensie kunnen we dus waarden voorstellen op typeniveau waar de
-extensie nog tekortschiet is dat de waarde \ihask{Z} en het type \ihask{Z}
-volledig los van elkaar staan, buiten de naam. Er is ook geen waarde van het
-type \ihask{Z}. In één van de volgende hoofdstukken gebruiken we een techniek
-waarmee we de waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
+extensie wordt dit type een \emph{kind} en de constructors types. Het
+\emph{kind} \ihask{Nat} is dus het \emph{kind} van twee types namelijk
+\ihask{Z} en \ihask{S Nat}. De \ihask{Nat} in \ihask{S Nat} is opnieuw het
+\emph{kind} Nat niet het type. Omdat dezelfde namen voor verschillende
+concepten af en toe verwarrend kunnen zijn en het niet onmogelijk is dat we al
+een type \ihask{Z} gedefinieerd hadden, worden types en constructors ook altijd
+gepromoveerd tot \emph{kinds} en types die beginnen met een apostrophe. Het
+type \ihask{Nat} wordt bijvoorbeeld altijd gepromoveerd tot de \emph{kind}
+\ihask{'Nat} en de constructor \ihask{Z} tot het type \ihask{'Z}.  Met deze
+extensie kunnen we dus waarden voorstellen op typeniveau. Waar de extensie nog
+tekortschiet is dat de waarde \ihask{Z} en het type \ihask{Z} volledig los van
+elkaar staan, buiten de naam. Er is ook geen waarde van het type \ihask{Z}. In
+één van de volgende hoofdstukken gebruiken we een techniek waarmee we de
+waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
 
 \subsection{Inductive families}
 
@@ -269,8 +273,8 @@ voorbeeld hiervan is het \ihask{Maybe a} type en dit geeft ons de indices uit
 Agda. Wat nog mist is de mogelijkheid om het type voor iedere constructor te
 variëren. Met behulp van generalised algebraic data types uit de GADTs extensie
 kunnen we dit wel. De KindSignatures extensie laat ons toe om bepaalde termen
-te annoteren met een kind zoals we nu bepaalde termen een type annotatie kunnen
-geven. Met deze twee extensies kunnen we eenvoudige inductive families
+te annoteren met een \emph{kind} zoals we nu bepaalde termen een type annotatie
+kunnen geven. Met deze twee extensies kunnen we eenvoudige inductive families
 implementeren in Haskell, als voorbeeld beschouwen we het type voor vectors:
 
 %----------------------------------------%
@@ -310,7 +314,7 @@ country -> country}, dit is eigenlijk niet geldig in Haskell maar het gaat om
 het idee. Dit is soms te expliciet omdat we wel in het type van de relatie
 geïnteresseerd zijn maar niet in de waarde zelf. In Haskell kunnen we
 gebruikmaken van typeclasses om informatie impliciet te houden, de typeclasses
-uit standaard Haskell laten maar een parameter toe. Omdat we voor een relatie
+uit standaard Haskell laten maar één parameter toe. Omdat we voor een relatie
 twee parameters nodig hebben, maken we gebruik van de MultiParamTypeClasses
 extensie. De FlexibleInstances extensie laat ons toe om type variables te
 gebruiken in de \ihask{instance} declaraties. De bijhorende typeclass voor het

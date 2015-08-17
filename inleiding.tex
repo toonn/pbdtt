@@ -2,7 +2,7 @@
 \label{inleiding}
 
 In deze thesis worden twee programmeertalen met een sterk typesysteem
-vergeleken. Dit met een nadruk op het typesysteem van de talen eerder dan de
+vergeleken. Dit met een nadruk op het typesysteem van de talen, eerder dan de
 talen zelf. Het gaat hier om twee functionele programmeertalen: Agda
 \ref{agda}, een dependently typed programmeertaal, en Haskell \ref{haskell},
 een taal met een Hindley-Milner \ref{hindmil} typesysteem.
@@ -13,22 +13,22 @@ een taal met een Hindley-Milner \ref{hindmil} typesysteem.
 Een typesysteem is een verzameling van regels waaraan code in een bepaalde
 programmeertaal moet voldoen. Er zijn verschillende redenen om zulke regels op
 te leggen. De belangrijkste is type safety; dit betekent dat de computer nooit
-onzinnige bewerkingen zal uitvoeren, wat een onzinnige bewerking juist is,
-hangt af van het typesysteem. Gewoonlijk worden bewerking zoals optelling enkel
-gedefinieerd op getallen, een voorbeeld van een onzinnige bewerking zou dan een
-optelling kunnen zijn van een getal en een lijst. Een andere vorm van
+onzinnige bewerkingen zal uitvoeren. Wat een onzinnige bewerking juist is,
+hangt af van het typesysteem. Gewoonlijk worden bewerkingen zoals optelling
+enkel gedefinieerd op getallen. Een voorbeeld van een onzinnige bewerking zou
+dan een optelling kunnen zijn van een getal en een lijst. Een andere vorm van
 bescherming die onder type safety valt is memory safety. Een belangrijke vorm
-hiervan is bescherming tegen buffer overflows, deze hebben vaak security
+hiervan is bescherming tegen buffer overflows: deze hebben vaak security
 vulnerabilities tot gevolg maar als het typesysteem over genoeg informatie
 beschikt, kan gegarandeerd worden dat ze niet kunnen voorkomen.  Een andere
 reden voor een typesysteem is bijvoorbeeld optimalisatie: als de compiler meer
 informatie heeft kunnen er soms betere optimalisaties gedaan worden. Types
 kunnen ook een vorm van documentatie zijn: een typesynoniem kan bijvoorbeeld
-verduidelijken dat een functie een naam verwacht in plaats van een gewoon een
+verduidelijken dat een functie een naam verwacht in plaats van gewoon een
 string, wat het type is voor een opeenvolging van karakters.
 
 Er is een grote variatie aan bestaande typesystemen. Het typesysteem voor de
-programmeertaal C \ref{C}, heeft eenvoudige types die in direct verband staan
+programmeertaal C \ref{C} heeft eenvoudige types die in direct verband staan
 met de voorstelling van de bijhorende waarden op het niveau van bits en bytes.
 Het typesysteem van Java \ref{Java} daarentegen is volledig gericht op de
 objectgeoriënteerde metafoor: een object wordt gedefinieerd door een klasse en
@@ -61,19 +61,19 @@ De eigenschappen die we opnemen in de types gaan van heel eenvoudig,
 bijvoorbeeld de lengte van een lijst, tot eerder ingewikkeld, bijvoorbeeld
 invarianten van zoekbomen. Fundamenteel is er geen limiet, wat in de logica uit
 te drukken is, is ook in de types uit te drukken. Echter als we ons bezig
-houden met programmeren eerder dan bewijzen formaliseren zijn de eigenschappen
-die we wensen af te dwingen vaak redelijk eenvoudig. We gebruiken de types
-eerder om eigenschappen die we in talen zonder dependent types impliciet laten
-- en dus in het achterhoofd moeten houden - expliciet te maken en zo door het
-typesysteem te laten nakijken.
+houden met programmeren, eerder dan bewijzen formaliseren, zijn de
+eigenschappen die we wensen af te dwingen vaak redelijk eenvoudig. We gebruiken
+de types eerder om eigenschappen die we in talen zonder dependent types
+impliciet laten - en dus in het achterhoofd moeten houden - expliciet te maken
+en zo door het typesysteem te laten nakijken.
 
 De typentheorie waarop Agda gebaseerd is, gelijkt op de intuïtionistische
 typentheorie van Per Martin-Löf \ref{martinlof}. In deze thesis laten we dit
-terzijde en bekijken we Agda als een programmeertaal met dependent types in
-tegenstelling to Haskell, wat als voorbeeld dient voor een programmeertaal die
-in de praktijk toegepast wordt voor grootschalige systemen. Deze veralgemening
-schiet natuurlijk tekort, Agda is geen perfecte voorstelling van \emph{alle}
-programmeertalen met dependent types en Haskell is niet de enige
+echter terzijde en bekijken we Agda als een programmeertaal met dependent types
+in tegenstelling tot Haskell, wat als voorbeeld dient voor een programmeertaal
+die in de praktijk toegepast wordt voor grootschalige systemen. Deze
+veralgemening schiet natuurlijk tekort, Agda is geen perfecte voorstelling van
+\emph{alle} programmeertalen met dependent types en Haskell is niet de enige
 programmeertaal die op industriële schaal gebruikt kan worden met een sterk
 typesysteem.
 
@@ -86,8 +86,8 @@ geïmplementeerd zijn in Agda en daarna als het ware vertaald zijn naar Haskell.
 Dit zorgt ervoor dat Agda als het ware bevoordeeld is om een elegante
 implementatie te hebben maar dat is irrelevant omdat het niet de bedoeling is
 een waardeoordeel te vellen. De gevalstudies dienen in de eerste plaats om te
-illustreren wat we met dependent types kunnen uitdrukken dat anders niet in de
-taal zelf uit te drukken is. De vergelijking tussen de twee talen is er vooral
-om aan te tonen dat deze manier van programmeren ook in een courante taal al
-mogelijk is. In hoofdstuk \ref{ch:agda-haskell} overlopen we de features die we
-gebruiken uit Agda en Haskell.
+illustreren wat we precies met dependent types kunnen uitdrukken dat anders
+niet in de taal zelf uit te drukken is. De vergelijking tussen de twee talen is
+er vooral om aan te tonen dat deze manier van programmeren ook in een courante
+taal al mogelijk is. In hoofdstuk \ref{ch:agda-haskell} overlopen we de
+features die we gebruiken uit Agda en Haskell.
