@@ -36,7 +36,7 @@ eigenlijk zijn.
 
 De definitie van nieuwe types gebeurt gelijkaardig als in andere getypeerde
 functionele programmeertalen. Een \iagda{data} sleutelwoord wordt gevolgd door
-de naam van het type, een dubbel punt, het type van het type, dan het
+de naam van het type, een dubbelepunt, het type van het type, dan het
 sleutelwoord \iagda{where} en op de volgende regels de constructors met hun
 type. Nemen we als voorbeeld een definitie voor natuurlijke getallen:
 
@@ -82,7 +82,7 @@ is licht aangepast om het voorbeeld eenvoudiger te maken.
 
 \iagda{Vec} is het type voor lijsten met een vaste lengte, vanaf nu noemen we
 dit vectors. Hier zien we twee nieuwe dingen, het type \iagda{Vec} verwacht nog
-twee argumenten. Het eerste is de parameter voor de dubbel punt, \iagda{A} met
+twee argumenten. Het eerste is de parameter voor de dubbelepunt, \iagda{A} met
 als type \iagda{Set} dus \iagda{A} is een eenvoudig type. Het tweede is de
 index van het type \iagda{ℕ}, dit is de naam van het type voor natuurlijke
 getallen uit de standard library, het verschil tussen een index en een
@@ -110,11 +110,11 @@ zolang het voldoet aan de eisen in de rest van het type. De accolades rond
 argument, \iagda{{A : Set}}, duidt aan dat deze argumenten impliciet zijn, ze
 worden afgeleid uit de context, in dit geval bijvoorbeeld uit het type van het
 vector argument. Er is nog een ander soort impliciete argumenten in Agda,
-instance arguments, deze worden aangeduid met dubbele accolades en worden op
-een andere manier ingevuld, de typechecker zoekt naar een concrete instance in
-de context, als er verschillende mogelijkheden zijn leidt dat tot een typefout.
-Oorspronkelijk zijn instance arguments toegevoegd aan Agda als een eenvoudig
-alternatief voor typeclasses uit Haskell.
+\emph{instance arguments}, deze worden aangeduid met dubbele accolades en
+worden op een andere manier ingevuld, de typechecker zoekt naar een concrete
+\emph{instance} in de context, als er verschillende mogelijkheden zijn leidt
+dat tot een typefout. Oorspronkelijk zijn \emph{instance arguments} toegevoegd
+aan Agda als een eenvoudig alternatief voor typeclasses uit Haskell.
 
 Een meer uitgebreid voorbeeld uit een artikel dat het nut van dependent types
 goed uitlegt \cite{TPoP}, laat zien dat dependent types zeer expressief zijn.
@@ -124,7 +124,7 @@ niet mogelijk is om een interface naar een database te voorzien die evenveel
 statische garanties biedt en even volledig - joins zijn zonder dependent types
 moeilijk te typeren - is zonder gebruik te maken van preprocessing of
 experimentele features. Dit betekent niet dat er geen libraries bestaan voor
-Haskell die bepaalde eigenschappen statisch of dynamisch op leggen, maar wel
+Haskell die bepaalde eigenschappen statisch of dynamisch opleggen, maar wel
 dat die beperkter zijn en minder statisch kunnen zijn. Statische correctheid is
 handiger omdat ze geen uitvoerige testen noodzakelijk maakt.
 
@@ -207,13 +207,13 @@ het begin vreemd aanvoelt maar nodig is omdat \iagda{[x]} een geldige naam zou
 kunnen zijn voor een functie.
 
 Er is nog één expressie die in andere talen gewoonlijk niet voorkomt, de
-zogenaamde \emph{with} expressie. Hiermee kunnen we een pattern match doen op
-een tussentijds resultaat. In de tweede gevalstudie wordt dit duidelijker door
-een voorbeeld.
+zogenaamde \emph{with} expressie. Hiermee kunnen we een \emph{pattern match}
+doen op een tussentijds resultaat. In de tweede gevalstudie wordt dit
+duidelijker door een voorbeeld.
 
 \subsection{Modules}
 
-Agda heeft net als Haskell modules om code in te kunnen delen in verschillende
+Agda heeft, net als Haskell, modules om code in te kunnen delen in verschillende
 logische eenheden die eventueel over verschillende bestanden verdeeld kunnen
 worden. In Agda kunnen we modules ook parametriseren, dit gaat in Haskell niet
 maar is wel terug te vinden in bijvoorbeeld de ML \cite{sml} \cite{ocaml} familie
@@ -257,24 +257,24 @@ voorbeeld maakt dit duidelijker:
 \end{minted}
 
 We definiëren gewoon een type voor natuurlijke getallen en door de DataKinds
-extensie wordt dit type een \emph{kind} en de constructors types. Het
+extensie wordt dit type een \emph{kind} en de constructors, types. Het
 \emph{kind} \ihask{Nat} is dus het \emph{kind} van twee types namelijk
 \ihask{Z} en \ihask{S Nat}. De \ihask{Nat} in \ihask{S Nat} is opnieuw het
-\emph{kind} Nat niet het type. Omdat dezelfde namen voor verschillende
+\emph{kind} \ihask{Nat} niet het type. Omdat dezelfde namen voor verschillende
 concepten af en toe verwarrend kunnen zijn en het niet onmogelijk is dat we al
 een type \ihask{Z} gedefinieerd hadden, worden types en constructors ook altijd
 gepromoveerd tot \emph{kinds} en types die beginnen met een apostrophe. Het
 type \ihask{Nat} wordt bijvoorbeeld altijd gepromoveerd tot de \emph{kind}
-\ihask{'Nat} en de constructor \ihask{Z} tot het type \ihask{'Z}.  Met deze
-extensie kunnen we dus waarden voorstellen op typeniveau. Waar de extensie nog
-tekortschiet is dat de waarde \ihask{Z} en het type \ihask{Z} volledig los van
-elkaar staan, buiten de naam. Er is ook geen waarde van het type \ihask{Z}. In
-één van de volgende hoofdstukken gebruiken we een techniek waarmee we de
-waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
+\ihask{'Nat} en de constructor \ihask{Z} tot het type \ihask{'Z}.  Met de
+DataKinds extensie kunnen we dus waarden voorstellen op typeniveau. Waar de
+extensie nog tekort schiet is dat de waarde \ihask{Z} en het type \ihask{Z}
+volledig los van elkaar staan, buiten de naam. Er is ook geen waarde van het
+type \ihask{Z}. In één van de volgende hoofdstukken gebruiken we een techniek
+waarmee we de waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
 
 \subsection{Inductive families}
 
-In Haskell hebben we wel types die kunnen afhangen van andere types, een
+In Haskell hebben we types die kunnen afhangen van andere types, een
 voorbeeld hiervan is het \ihask{Maybe a} type en dit geeft ons de indices uit
 Agda. Wat nog mist is de mogelijkheid om het type voor iedere constructor te
 variëren. Met behulp van generalised algebraic data types \cite{gadts} uit de

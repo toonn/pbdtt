@@ -7,15 +7,15 @@
 Deze eerste gevalstudie is geïnspireerd door de populaire Mario \cite{mario}
 franchise van Nintendo \cite{nintendo}, in het bijzonder Super Mario Bros.
 \cite{supmario}. Er zijn verschillende vijanden in het spel maar hier beperken
-we ons tot de schildpadachtige Koopa Troopas. Zoals wel vaker voorkomt bevatten
-vele van de Mariospellen zogenaamde \emph{glitches}, fouten die uitgebuit
-kunnen worden om bepaalde acties uit te voeren die normaal moeilijk of
-onmogelijk zijn. Zo is er bijvoorbeeld een fout met een Koopa Troopa waardoor
-Mario aan het einde van het level over de vlag kan springen, dit is normaal
-niet mogelijk. De precieze fout is moeilijk uit te leggen maar ze is mogelijk
-omdat een Koopa Troopa als het ware onder het level kan rondlopen, dit is in
-figuur \ref{koopaglitch} te zien. Deze fout is eigenlijk de precieze inspiratie
-van deze gevalstudie.
+we ons tot de schildpadachtige Koopa Troopas. Zoals wel vaker voorkomt,
+bevatten vele van de Mariospellen zogenaamde \emph{glitches}, fouten die
+uitgebuit kunnen worden om bepaalde acties uit te voeren die normaal moeilijk
+of onmogelijk zijn. Zo is er bijvoorbeeld een fout met een Koopa Troopa
+waardoor Mario aan het einde van het level over de vlag kan springen, dit is
+normaal niet mogelijk. De precieze fout is moeilijk uit te leggen maar ze is
+mogelijk omdat een Koopa Troopa als het ware onder het level kan rondlopen, dit
+is in figuur \ref{koopaglitch} te zien. Deze fout is eigenlijk de precieze
+inspiratie van deze gevalstudie.
 
 \begin{figure}
   \centering
@@ -69,8 +69,8 @@ type, \iagda{⊤} ook wel top genoemd, met één waarde namelijk \iagda{tt}. En,
 ten laatste, \iagda{Data.Empty} definieert een leeg type, \iagda{⊥} ook wel
 bottom genoemd, waarvoor dus geen waarden bestaan. Dit is anders dan in Haskell
 waar je eigenlijk geen leeg type kunt hebben, elk type bevat daar minstens
-bottom, wat verschillende dingen kan betekenen, bijvoorbeeld niet eindiging of
-een error.
+\emph{bottom}, wat verschillende dingen kan betekenen, bijvoorbeeld niet
+eindigen of een fout in de uitvoering.
 
 Het volgende stuk is een geneste module declaratie waarin het type
 \iagda{Matrix} wordt gedefinieerd als een vector van vectoren en een functie
@@ -116,8 +116,8 @@ Koopa Troopa betreden worden maar een positie met \iagda{Clearance}
 \iagda{High} kan enkel door groene Koopa Troopas betreden worden en gebruiken
 we om posities aan te duiden waar de enige logische beweging vallen is. De
 \iagda{Clearance} \iagda{Ultimate} gebruiken we voor posities waar geen enkele
-Koopa Troopa mag komen. Een positie stellen we voor door een record met twee
-velden voor een horizontale en een verticale coördinaat, een veld dat het
+Koopa Troopa mag komen. Een positie stellen we voor door een \emph{record} met
+twee velden voor een horizontale en een verticale coördinaat, een veld dat het
 \iagda{Material} van de positie aangeeft en een veld voor de \iagda{Clearance}.
 De constructor \iagda{pos} kunnen we gebruiken om een positie op te stellen,
 een voorbeeld van een positie kan dus zijn: \iagda{pos 3 5 gas Low}, let
@@ -179,7 +179,7 @@ Het type waarmee we de paden voorstellen die Koopa Troopas kunnen afleggen,
 een bepaalde Koopa Troopa. De parameter voor de kleur is impliciet omdat die
 volgt uit het type van de Koopa Troopa. Verder hangt de geldigheid van een pad
 af van de Koopa Troopa en kan een pad maar voor één Koopa Troopa tegelijk
-opgesteld worden dus is er een parameter waar we een Koopa Troopa verwachten.
+opgesteld worden, dus is er een parameter waar we een Koopa Troopa verwachten.
 Een pad gaat van een beginpositie naar een eindpositie en die moeten kunnen
 variëren voor de verschillende constructors, dus dat zijn indices. De
 constructor voor een leeg pad, \iagda{[]}, moet een begin- en een eindpositie
@@ -210,7 +210,7 @@ een positie uitdrukt.
 
 \inputagda[firstline=78, lastline=86, breaklines]{agda-casestt/koopa.agda}
 
-De \iagda{matterToPosVec} functie verwacht twee vectoren van dezelfde lengte
+De \iagda{matterToPosVec} functie verwacht twee vectoren van dezelfde lengte,
 met \iagda{Material}s in en twee coördinaten die aangeven bij welke positie het
 eerste \iagda{Material} in de eerste vector hoort. Het resultaat is een vector
 van dezelfde lengte met posities in met de juiste coördinaten, de
@@ -239,19 +239,19 @@ De functie \iagda{matterToPosVecs} maakt gebruik van de vorige functie om een
 vector van vectoren van \iagda{Material}s om te zetten in een vector van
 vectoren van posities. Het basisgeval is de lege vector en die wordt omgezet in
 een lege vector. In het recursieve geval zien we dat de \iagda{_∷_} constructor
-voor vectoren gebruikt wordt in de prefix vorm, dit is omdat we willen pattern
-matchen op een derde impliciet argument en drie argumenten gaan niet goed samen
-met een binaire infix constructor. We gebruiken \iagda{matterToPosVec} op de
-eerste vector in de vector van vectoren en op de vector daaronder, die we
-verkrijgen uit de functie \iagda{unders}. \iagda{unders} is eigenlijk heel
-gelijkaardig aan de \iagda{head} functie maar is specifieker voor een vector
-van vectoren en heeft een \emph{fallback} argument dat we teruggeven als we de
-rij onder de laatste rij nodig hebben. Het enige dat dan nog rest is om de
-recursieve oproep te doen op de rest van de vector van vectoren. De
-\iagda{matsToMat} functie maakt van de vector van vectoren van posities, die we
-terugkrijgen uit \iagda{matterToPosVecs}, een matrix waarbij de rijen eerst van
-volgorde gewisseld worden omdat de index $(0,0)$ bij een matrix linksboven zit
-en in de levelvoorstelling links onder.
+voor vectoren gebruikt wordt in de prefix vorm, dit is omdat we willen
+\emph{pattern matchen} op een derde impliciet argument en drie argumenten gaan
+niet goed samen met een binaire infix constructor. We gebruiken
+\iagda{matterToPosVec} op de eerste vector in de vector van vectoren en op de
+vector daaronder, die we verkrijgen uit de functie \iagda{unders}.
+\iagda{unders} is eigenlijk heel gelijkaardig aan de \iagda{head} functie maar
+is specifieker voor een vector van vectoren en heeft een \emph{fallback}
+argument dat we teruggeven als we de rij onder de laatste rij nodig hebben. Het
+enige dat dan nog rest is om de recursieve oproep te doen op de rest van de
+vector van vectoren. De \iagda{matsToMat} functie maakt van de vector van
+vectoren van posities, die we terugkrijgen uit \iagda{matterToPosVecs}, een
+matrix waarbij de rijen eerst van volgorde gewisseld worden omdat de index
+$(0,0)$ bij een matrix linksboven zit en in de levelvoorstelling links onder.
 
 Met deze functies kunnen we gemakkelijk een level opstellen door de juiste
 \iagda{Material}s in de juiste volgorde op te geven, hierbij wordt dan meteen
@@ -277,13 +277,13 @@ we die niet met cijfers kunnen schrijven.
 \inputagda[firstline=116, lastline=130, breaklines]{agda-casestt/koopa.agda}
 
 De eerste functie, \iagda{_<'_}, vergelijkt twee natuurlijke getallen en geeft
-een type terug, in een taal waar types geen waarden zijn gaat dit meestal niet.
-Als het eerste getal strikt kleiner is dan het tweede is dit type \iagda{⊤},
-anders is het type \iagda{⊥}. Een element van het type \iagda{⊤} kan altijd
-impliciet ingevuld worden, er is er namelijk maar één: \iagda{tt}. Een element
-van het type \iagda{⊥} kan nooit gegeven worden want er zijn er geen.  Van deze
-functie maken we gebruik in het type van \iagda{fromNat}, een functie die een
-natuurlijk getal omzet in een element van \iagda{Fin n}. We kunnen een
+een type terug, in een taal waar types geen waarden zijn gaat dit gewoonlijk
+niet. Als het eerste getal strikt kleiner is dan het tweede is dit type
+\iagda{⊤}, anders is het type \iagda{⊥}. Een element van het type \iagda{⊤} kan
+altijd impliciet ingevuld worden, er is er namelijk maar één: \iagda{tt}. Een
+element van het type \iagda{⊥} kan nooit gegeven worden want er zijn er geen.
+Van deze functie maken we gebruik in het type van \iagda{fromNat}, een functie
+die een natuurlijk getal omzet in een element van \iagda{Fin n}. We kunnen een
 natuurlijk getal \iagda{k} maar omzetten in een \iagda{Fin n} als \iagda{k}
 strikt kleiner is dan \iagda{n}. Het type \iagda{k <' n} is ofwel gelijk aan
 het type \iagda{⊤} ofwel aan het type \iagda{⊥}, in het eerste geval moeten we
@@ -298,8 +298,8 @@ type \iagda{⊥}. Omdat de \iagda{n} in \iagda{Fin n} een natuurlijk getal is, i
 we voor elke mogelijke waarde van het argument \iagda{n} een antwoord bieden.
 In dit geval is het type \iagda{k <' n} sowieso gelijk aan \iagda{⊥} en omdat
 we geen waarde van dat type kunnen krijgen kunnen we gebruik maken van het
-zogenaamde \emph{absurd} pattern: \iagda{{}} of \iagda{()}. Het absurd pattern
-geeft aan dat er onmogelijk een waarde van het juiste type bestaat, de
+zogenaamde \emph{absurd pattern}: \iagda{{}} of \iagda{()}. Het \emph{absurd
+pattern} geeft aan dat er onmogelijk een waarde van het juiste type bestaat, de
 typechecker moet dit wel kunnen nagaan dus dit werkt alleen voor types die
 eenvoudig genoeg zijn. Als Agda overtuigd is dat er geen waarde bestaat, moeten
 we ook geen rechterzijde opgeven. In de derde vergelijking zien we nog dat het
@@ -308,7 +308,7 @@ wordt en dus geldig blijft voor het recursieve geval, het is tenslotte ook maar
 een eenvoudige waarde, \iagda{tt}. De functie \iagda{f} is slechts een
 afkorting voor \iagda{fromNat}. De functie \iagda{p} is een afkorting voor
 \iagda{lookup} waarbij de coördinaten omgewisseld zijn voor de leesbaarheid en
-het level niet moet opgegeven worden omdat dat in alle voorbeelden hetzelfde
+het level niet moet opgegeven worden omdat het in alle voorbeelden hetzelfde
 is.
 
 Met al deze extra definities kunnen we nu paden op een compacte manier
@@ -336,13 +336,13 @@ De fout bij \iagda{red_nopath_one} ziet eruit als volgt:
 \end{minted}
 
 Agda geeft aan dat de positie in het type van \iagda{stay} niet overeenkomt met
-de positie, door \iagda{stay} te gebruiken op positie $(0,1)$ zou het type
-\iagda[breaklines]{pos 0 1 solid Ultimate follows pos 0 1 solid Ultimate ⟨ Red
-⟩} moeten zijn maar dat is niet toegelaten in de definitie van de constructor.
-Eigenlijk verwachten we een fout, daar waar we een muur in lopen en hier
-krijgen we de fout pas te zien als we al in een muur staan. Dit is omdat de
-\iagda{_↠⟨_⟩_} constructor rechts associatief is, dus de eerste fout die Agda
-tegenkomt, zit zo ver mogelijk vanachter in het pad.
+de eigenlijke positie, door \iagda{stay} te gebruiken op positie $(0,1)$ zou
+het type \iagda[breaklines]{pos 0 1 solid Ultimate follows pos 0 1 solid
+Ultimate ⟨ Red ⟩} moeten zijn maar dat is niet toegelaten in de definitie van
+de constructor. Eigenlijk verwachten we een fout, daar waar we een muur in
+lopen en hier krijgen we de fout pas te zien als we al in een muur staan. Dit
+is omdat de \iagda{_↠⟨_⟩_} constructor rechts associatief is, dus de eerste
+fout die Agda tegenkomt, zit zo ver mogelijk vanachter in het pad.
 
 In de fout voor \iagda{red_nopath_two} kunnen we zien dat de beweging waarbij
 we een muur zouden inlopen wel als fout wordt gezien:
@@ -409,23 +409,23 @@ bespreken we de implementatie van dit model in Haskell.
 In Haskell beginnen we de code met de LANGUAGE pragma's die besproken zijn in
 hoofdstuk \ref{ch:agda-haskell}. Daarna komt de module declaratie, hier zien we
 voor de eerste keer dat Haskell redelijk strikte regels heeft over naamgeving,
-modules types en constructors moeten met een hoofdletter beginnen en functies
+modules, types en constructors moeten met een hoofdletter beginnen en functies
 met een kleine letter.
 
 \inputhaskell[firstline=8, lastline=11, breaklines]{haskell-casestt/koopa.hs}
 
 Om te beginnen moeten we een aantal types die we in Agda uit de standard
-library kunnen halen zelf implementeren or is bijvoorbeeld geen erg grote nood
-aan een unaire voorstelling van natuurlijke getallen in Haskell. De naamgeving
-en technieken die we hier gebruiken komen uit een artikel \cite{hasochism} over
-dependently typed programmeren in Haskell met de titel: "Hasochism: The
-Pleasure and Pain of Dependently Typed Haskell Programming." Het wordt redelijk
-snel duidelijk waarom het artikel die titel heeft.
+library kunnen halen, zelf implementeren, er is bijvoorbeeld geen erg grote
+nood aan een unaire voorstelling van natuurlijke getallen in Haskell. De
+naamgeving en technieken die we hier gebruiken komen uit een artikel
+\cite{hasochism} over dependently typed programmeren in Haskell met de titel:
+``Hasochism: The Pleasure and Pain of Dependently Typed Haskell Programming.''
+Het wordt redelijk snel duidelijk waarom het artikel die titel heeft.
 
 \inputhaskell[firstline=13, lastline=24, breaklines]{haskell-casestt/koopa.hs}
 
 We beginnen met het definiëren van onze unaire natuurlijke getallen, dankzij de
-datatype promotion van de DataKinds extensie hebben we nu ook meteen unaire
+datatype promotion van de DataKinds extensie, hebben we nu ook meteen unaire
 natuurlijke getallen op het typeniveau. Wat we nog missen is een verbinding
 tussen waarden op het waardeniveau en waarden op het typeniveau zoals die er
 wel is in Agda, daar kunnen we een argument van de functie ook in het type
@@ -435,15 +435,15 @@ van \ihask{Natty}, elke waarde die we opstellen heeft een ander type:
 \ihask{Zy} heeft type \ihask{Natty Z} en \ihask{Sy Zy} heeft type \ihask{Natty
 (S Z)}. Omdat elk type \ihask{Natty n} maar één waarde bevat, heeft deze
 constructie de benaming singleton gekregen. De functie \ihask{natter}, ongeveer
-te lezen als "meer Nat-achtig," zet een \ihask{Natty n} om in een \ihask{Nat},
+te lezen als ``meer Nat-achtig,'' zet een \ihask{Natty n} om in een \ihask{Nat},
 hierbij werpen we als het ware informatie op het typeniveau weg. De omgekeerde
 conversie gaat niet zomaar, er is geen manier om statisch te bepalen wat de
 \ihask{n} in het return type \ihask{Natty n} zou moeten zijn. Om dit bij
 benadering toch te kunnen doen hebben we een derde type nodig, \ihask{NATTY}.
 Dit type verstopt als het ware de typeniveau informatie van een \ihask{Natty
-n}. Nu kunnen we de functie \ihask{nattyer}, "meer Natty-achtig," wel
+n}. Nu kunnen we de functie \ihask{nattyer}, ``meer Natty-achtig,'' wel
 schrijven. De definitie is eenvoudig, in het recursieve geval moeten we een
-pattern match doen op de recursieve oproep om met de eigenlijke waarde van de
+\emph{pattern match} doen op de recursieve oproep om met de eigenlijke waarde van de
 \ihask{Natty} te kunnen werken.
 
 Haskell ontbreekt logischerwijs tevens een type voor begrensde natuurlijke
@@ -467,7 +467,7 @@ Haskell aanwezig is met de bijhorende functies.
 \inputhaskell[firstline=38, lastline=58, breaklines]{haskell-casestt/koopa.hs}
 
 Haskell laat binaire infix constructors toe door hun naam te beginnen met een
-dubbelpunt, toevallig kunnen we zo bijna dezelfde notatie gebruiken als in
+dubbelepunt, toevallig kunnen we zo bijna dezelfde notatie gebruiken als in
 Agda. \ihask{vlookup} haalt een element uit een vector met behulp van een
 begrensd getal dus we sluiten uit dat een index te groot of te klein is.
 \ihask{vreplicate} stelt een vector op met een bepaald aantal herhalingen van
@@ -528,21 +528,21 @@ inpakken in een waarde met type \ihask{POSITIONNY}.
 
 Het volgende concept dat we moeten uitdrukken is de relatie tussen een kleur en
 de bijhorende \ihask{Clearance}, in Agda gebruiken we hiervoor een type en
-instance arguments. Omdat we niet telkens expliciet een waarde willen meegeven
-die toch niet gebruikt wordt, wat we gebruiken is immers het type, gebruiken we
-een typeclass in Haskell.
+\emph{instance arguments}. Omdat we niet telkens expliciet een waarde willen
+meegeven die toch niet gebruikt wordt, wat we gebruiken is immers het type,
+gebruiken we een typeclass in Haskell.
 
 \inputhaskell[firstline=116,lastline=118,breaklines]{haskell-casestt/koopa.hs}
 
 Op deze manier kunnen we met een typeclass constraint aan de informatie geraken
-die we nodig hebben zonder een expliciet argument.
+die we nodig hebben, zonder een expliciet argument.
 
 Voor het \ihask{Follows} type is de implementatie redelijk eenvoudig. Buiten de
-typeclass constraint in plaats van een instance argument en het polymorfisme in
-plaats van impliciete argumenten, is het grootste verschil de syntax. Haskell
-laat binaire infix constructors toe en met de extensie TypeOperators
-\cite{typeops} ook types en typeclasses maar een ternaire mixfix notatie is er
-niet. We gebruiken dus gewoon een type met drie parameters.
+typeclass constraint in plaats van een \emph{instance argument} en het
+polymorfisme in plaats van impliciete argumenten, is het grootste verschil de
+syntax. Haskell laat binaire infix constructors toe en met de extensie
+TypeOperators \cite{typeops} ook types en typeclasses maar een ternaire mixfix
+notatie is er niet. We gebruiken dus gewoon een type met drie parameters.
 
 \inputhaskell[firstline=120,lastline=124,breaklines]{haskell-casestt/koopa.hs}
 
@@ -566,22 +566,22 @@ leesbaarheid.
 De functies om een \ihask{Matrix} op te stellen aan de hand van een vector van
 vectoren van \ihask{Material}s zijn redelijk eenvoudig. We hebben wel
 expliciete argumenten nodig voor de breedte en hoogte maar eigenlijk om een
-andere reden dan vorig gebruiken van de singleton types. In dit geval hebben we
-de informatie al op het typeniveau en hebben we ze in \ihask{matterToPosVecs}
-nodig op het niveau van waarden. De enige manier om dit te bereiken is met
-expliciete argumenten van een singleton type.
+andere reden dan bij vorige gebruiken van de singleton types. In dit geval
+hebben we de informatie al op het typeniveau en hebben we ze in
+\ihask{matterToPosVecs} nodig op het niveau van waarden. De enige manier om dit
+te bereiken is met expliciete argumenten van een singleton type.
 
 \inputhaskell[firstline=138,lastline=163,breaklines]{haskell-casestt/koopa.hs}
 
-De enige functies uit Agda die we nog missen in Haskell zijn de functies die
-een \ihask{Material} voorstellen met een symbool. In Haskell kunnen we deze wel
-definiëren zoals in Agda, mits we geldige karakters gebruiken, functienamen
-moeten uit alfanumerieke karakters bestaan en niet alle unicode karakters zijn
-alfanumeriek. Maar omdat we geen fixity declaratie kunnen geven voor een
-functie en geen unaire operatoren kunnen definiëren, is er geen manier om deze
-functies rechts associatief te maken. Als we de constructor \ihask{(:>)} dus
-mee zouden opnemen in de functies zouden we overal \ihask{\$} moeten gebruiken
-waar nu de constructor staat.
+Twee functies uit Agda die we nog missen in Haskell zijn de functies die een
+\ihask{Material} voorstellen met een symbool. In Haskell kunnen we deze wel
+definiëren zoals in Agda, mits we geldige karakters gebruiken, namen van
+functies moeten uit alfanumerieke karakters bestaan en niet alle unicode
+karakters zijn alfanumeriek. Maar omdat we geen fixity declaratie kunnen geven
+voor een functie en geen unaire operatoren kunnen definiëren, is er geen manier
+om deze functies rechts associatief te maken. Als we de constructor
+\ihask{(:>)} dus mee zouden opnemen in de functies zouden we overal \ihask{$}
+moeten gebruiken waar nu de constructor staat.
 
 \inputhaskell[firstline=165,lastline=168,breaklines]{haskell-casestt/koopa.hs}
 
@@ -695,7 +695,7 @@ De eerste fout gaat over het pad als een geheel en zegt dat het eigenlijke
 specifieke positie, Haskell leidt wel af dat de \ihask{Material} \ihask{Gas}
 moet zijn maar niet dat de \ihask{Clearance} \ihask{Ultimate} niet zou mogen
 voorkomen. De derde fout gaat wel over de \ihask{Clearance} voor een rode Koopa
-Troopa. Deze drie zijn heel volledig maar we moeten wel goed opletten dat die
+Troopa. Deze drie zijn wel heel volledig maar we moeten goed opletten dat die
 fouten niet allemaal dezelfde oorzaak hebben, zoals hier. Merken we ook nog op
 dat de eerste fout alleen verschijnt als we de type signature voor
 \ihask{redNoPathOne} geven. We moeten dus goed oppassen met inferentie omdat we
@@ -739,11 +739,11 @@ vorige fouten die allemaal ongeveer hetzelfde waren.
 \end{Verbatim}
 
 Deze keer heeft de fout niets met \ihask{Material}s te maken maar wel met de
-\ihask{Clearance} zoals verwacht. De rode Koopa Troopa heeft geen
-\ihask{Clearance} \ihask{High} dus de juiste instance kan niet gevonden worden.
-De oplossing die Haskell voorstelt is wel fout, het was een bewuste keuze om
-die instance niet te definiëren voor rode Koopa Troopas. Om dit soort
-verwarrend advies te vermijden zouden gesloten typeclasses nuttig zijn.
+\ihask{Clearance}, zoals verwacht. De rode Koopa Troopa heeft geen
+\ihask{Clearance} \ihask{High} dus de juiste \emph{instance} kan niet gevonden
+worden. De oplossing die Haskell voorstelt is wel fout, het was een bewuste
+keuze om die \emph{instance} niet te definiëren voor rode Koopa Troopas. Om dit
+soort verwarrend advies te vermijden zouden gesloten typeclasses nuttig zijn.
 
 We kunnen ook geldige paden voor groene Koopa Troopas opgeven met dezelfde
 opmerkingen als bij de code in Agda: elk pad dat geldig is voor een rode Koopa
@@ -793,17 +793,17 @@ bijvoorbeeld werken met vectoren, in plaats van lijsten en begrensde getallen
 als indices, voorkomt elke vorm van indexeringsfouten.
 
 We hebben ook een duidelijk verschil gezien tussen programmeren in een
-\emph{volwaardige} dependently type taal en een eerder praktische taal met een
-typesysteem dat aan expressiviteit wint. Ik denk dat de titel van het artikel
-over dependently type programmeren in Haskell ondertussen wel duidelijk is.
-Haskell zit al redelijk dicht bij dependent types maar verschilt nog genoeg om
-het heel moeilijk te maken om op deze manier te werken. In Haskell kan het
-extra werk nog steeds aanvaardbaar zijn afhankelijk van de kost van fouten maar
-is het waarschijnlijk eerder voordelig om te werken met gedeeltelijke
-verificatie. Wat hier wel tegenover staat is dat Haskell met deze technieken in
-de praktijk bruikbaar is, daar waar Agda nog een lange weg te gaan heeft
-voordat dit het geval is. Ook is een ontwikkeling als het singleton package
-\cite{singletonpack} het vermelden waard, dit zou gedeeltelijk voor een
+\emph{volwaardige} dependently typed taal en een eerder praktische taal met een
+typesysteem dat aan expressiviteit aan het winnen is. Ik denk dat de titel van
+het artikel over dependently typed programmeren in Haskell ondertussen wel
+duidelijk is. Haskell zit al redelijk dicht bij dependent types maar verschilt
+nog genoeg om het heel moeilijk te maken om op deze manier te werken. In
+Haskell kan het extra werk nog steeds aanvaardbaar zijn afhankelijk van de kost
+van fouten maar is het waarschijnlijk eerder voordelig om te werken met
+gedeeltelijke verificatie. Wat hier wel tegenover staat is dat Haskell met deze
+technieken in de praktijk bruikbaar is, daar waar Agda nog een lange weg te
+gaan heeft voordat dit het geval is. Ook is een ontwikkeling als het singleton
+package \cite{singletonpack} het vermelden waard, dit zou gedeeltelijk voor een
 vereenvoudiging kunnen zorgen wat de veelheid aan types betreft die we
 momenteel nodig hebben.
 
