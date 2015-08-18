@@ -10,7 +10,7 @@ niet uitgelegd wordt, deze thesis veronderstelt dat de lezer vertrouwd is met
 getypeerd functioneel programmeren. Omdat Agda minder bekend is, is de uitleg
 hierover uitgebreider dan die over Haskell. Het enige dat we voor Haskell
 moeten uitleggen zijn namelijk de extensies van de Glasgow Haskell Compiler
-\ref{ghc}, GHC, die we gebruiken. Merk op dat overal waar code getoond wordt,
+\cite{ghc}, GHC, die we gebruiken. Merk op dat overal waar code getoond wordt,
 het symbool {\tiny\ensuremath{\hookrightarrow}} gebruikt wordt om aan te duiden
 dat een regel die te lang was op die regel verder gaat, dit resulteert niet
 altijd in geldige code dus bij het overnemen moet hierop gelet worden.
@@ -56,18 +56,18 @@ eigenlijk \iagda{Set₀} is. Het type van \iagda{Set₀} is \iagda{Set₁} en de
 hiërarchie gaat in theorie oneindig ver door. Haskell heeft gelijkaardige
 concepten maar daar gaat de hiërarchie niet erg ver door. De hiërarchie gaat
 als volgt in Haskell, met de Engelse termen omdat ze niet allemaal een goede
-vertaling hebben: een value heeft een type, een type heeft een \emph{kind}, een
-\emph{kind} heeft een sort en hier stopt de hiërarchie. Het dichtste equivalent
-van \iagda{Set} is in Haskell het \emph{kind} \ihask{*}, \ihask{*} heeft nog
-sort \ihask{BOX} maar \ihask{BOX} heeft zelf sort \ihask{BOX}. Merk op dat
-\ihask{BOX} enkel en alleen een intellectueel concept is, het is niet uit te
-drukken in Haskell zelf.  Het tweede verschil met een type declaratie in een
-taal zoals Haskell is dat we het type van elke constructor moeten opgeven, voor
-\iagda{Nat} is dit heel eenvoudig. In het volgende voorbeeld wordt duidelijker
-waarom we deze types moeten specificeren.
+vertaling hebben: een value heeft een type, een type heeft een \emph{kind}
+\cite{kind}, een \emph{kind} heeft een sort en hier stopt de hiërarchie. Het
+dichtste equivalent van \iagda{Set} is in Haskell het \emph{kind} \ihask{*},
+\ihask{*} heeft nog sort \ihask{BOX} maar \ihask{BOX} heeft zelf sort
+\ihask{BOX}. Merk op dat \ihask{BOX} enkel en alleen een intellectueel concept
+is, het is niet uit te drukken in Haskell zelf.  Het tweede verschil met een
+type declaratie in een taal zoals Haskell is dat we het type van elke
+constructor moeten opgeven, voor \iagda{Nat} is dit heel eenvoudig. In het
+volgende voorbeeld wordt duidelijker waarom we deze types moeten specificeren.
 
 Dit voorbeeld wordt vaak gebruikt om het concept van dependent types te
-illustreren. Deze code komt uit de Agda Standard Library \ref{agda:stdlib} maar
+illustreren. Deze code komt uit de Agda Standard Library \cite{agda:stdlib} maar
 is licht aangepast om het voorbeeld eenvoudiger te maken.
 
 %----------------------------------------%
@@ -88,7 +88,7 @@ index van het type \iagda{ℕ}, dit is de naam van het type voor natuurlijke
 getallen uit de standard library, het verschil tussen een index en een
 parameter is dat een index voor elke constructor kan variëren terwijl een
 parameter voor alle constructors hetzelfde is. Een type met indices noemen we
-ook wel een inductive family \ref{indfam}. De lege vector, \iagda{[]}, heeft
+ook wel een inductive family \cite{indfam}. De lege vector, \iagda{[]}, heeft
 lengte nul, het type is \iagda{Vec A zero}: het is dus een vector van elementen
 van type \iagda{A} met lengte \iagda{zero}. De constructor die langere vectoren
 maakt, verwacht een element, \iagda{x} van type \iagda{A}, een vector met
@@ -117,7 +117,7 @@ Oorspronkelijk zijn instance arguments toegevoegd aan Agda als een eenvoudig
 alternatief voor typeclasses uit Haskell.
 
 Een meer uitgebreid voorbeeld uit een artikel dat het nut van dependent types
-goed uitlegt \ref{TPoP}, laat zien dat dependent types zeer expressief zijn.
+goed uitlegt \cite{TPoP}, laat zien dat dependent types zeer expressief zijn.
 Het type \iagda{RA} laat toe om een relationele algebra expressie op te stellen
 die correct is door constructie. Het artikel beargumenteert dat het in Haskell
 niet mogelijk is om een interface naar een database te voorzien die evenveel
@@ -206,12 +206,17 @@ is: \iagda{[_]}, dan moeten er spaties rond het argument, \iagda{[ x ]}, wat in
 het begin vreemd aanvoelt maar nodig is omdat \iagda{[x]} een geldige naam zou
 kunnen zijn voor een functie.
 
+Er is nog één expressie die in andere talen gewoonlijk niet voorkomt, de
+zogenaamde \emph{with} expressie. Hiermee kunnen we een pattern match doen op
+een tussentijds resultaat. In de tweede gevalstudie wordt dit duidelijker door
+een voorbeeld.
+
 \subsection{Modules}
 
 Agda heeft net als Haskell modules om code in te kunnen delen in verschillende
 logische eenheden die eventueel over verschillende bestanden verdeeld kunnen
 worden. In Agda kunnen we modules ook parametriseren, dit gaat in Haskell niet
-maar is wel terug te vinden in bijvoorbeeld de ML \ref{sml} \ref{ocaml} familie
+maar is wel terug te vinden in bijvoorbeeld de ML \cite{sml} \cite{ocaml} familie
 van talen, die net als Haskell statisch getypeerd en functioneel zijn. Om een
 geparametriseerde module te gebruiken moeten we er waarden aan meegeven
 overeenkomstig de types van de parameters. Op deze manier kunnen we er
@@ -235,10 +240,11 @@ aantal extensies nodig van GHC.
 Haskell heeft geen dependent types maar we hebben waarden nodig op het niveau
 van types, in Haskell moeten we die dus voorstellen door types, en die types
 moeten zelf een type hebben, wat in Haskell dus een \emph{kind} is. Normaal
-kunnen we in Haskell geen \emph{kinds} definiëren maar met de extensie DataKinds
-gaat dit wel.  Deze extensie laat ons toe om zelf \emph{kinds} te definiëren
-met bijhorende types door onze gewone types te promoveren tot \emph{kinds} en
-hun constructors te promoveren tot types. Een voorbeeld maakt dit duidelijker:
+kunnen we in Haskell geen \emph{kinds} definiëren maar met de extensie
+DataKinds \cite{datakinds} gaat dit wel.  Deze extensie laat ons toe om zelf
+\emph{kinds} te definiëren met bijhorende types door onze gewone types te
+promoveren tot \emph{kinds} en hun constructors te promoveren tot types. Een
+voorbeeld maakt dit duidelijker:
 
 %----------------------------------------%
 \begin{minted}[fontsize=\small]{haskell}
@@ -271,11 +277,12 @@ waarden op waardeniveau en typeniveau ongeveer kunnen verbinden.
 In Haskell hebben we wel types die kunnen afhangen van andere types, een
 voorbeeld hiervan is het \ihask{Maybe a} type en dit geeft ons de indices uit
 Agda. Wat nog mist is de mogelijkheid om het type voor iedere constructor te
-variëren. Met behulp van generalised algebraic data types uit de GADTs extensie
-kunnen we dit wel. De KindSignatures extensie laat ons toe om bepaalde termen
-te annoteren met een \emph{kind} zoals we nu bepaalde termen een type annotatie
-kunnen geven. Met deze twee extensies kunnen we eenvoudige inductive families
-implementeren in Haskell, als voorbeeld beschouwen we het type voor vectors:
+variëren. Met behulp van generalised algebraic data types \cite{gadts} uit de
+GADTs extensie kunnen we dit wel. De KindSignatures extensie laat ons toe om
+bepaalde termen te annoteren met een \emph{kind} zoals we nu bepaalde termen
+een type annotatie kunnen geven. Met deze twee extensies kunnen we eenvoudige
+inductive families implementeren in Haskell, als voorbeeld beschouwen we het
+type voor vectors:
 
 %----------------------------------------%
 \begin{minted}[fontsize=\small]{haskell}

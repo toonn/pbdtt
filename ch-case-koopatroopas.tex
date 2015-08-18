@@ -4,9 +4,9 @@
 
 \section{Inleiding}
 
-Deze eerste gevalstudie is geïnspireerd door de populaire Mario \ref{mario}
-franchise van Nintendo \ref{nintendo}, in het bijzonder Super Mario Bros.
-\ref{supmario}. Er zijn verschillende vijanden in het spel maar hier beperken
+Deze eerste gevalstudie is geïnspireerd door de populaire Mario \cite{mario}
+franchise van Nintendo \cite{nintendo}, in het bijzonder Super Mario Bros.
+\cite{supmario}. Er zijn verschillende vijanden in het spel maar hier beperken
 we ons tot de schildpadachtige Koopa Troopas. Zoals wel vaker voorkomt bevatten
 vele van de Mariospellen zogenaamde \emph{glitches}, fouten die uitgebuit
 kunnen worden om bepaalde acties uit te voeren die normaal moeilijk of
@@ -22,7 +22,7 @@ van deze gevalstudie.
   \def\svgwidth{\textwidth}
   \import{figures/}{KoopaTroopaGlitch.pdf\string_tex}
   \caption{Onder Mario is nog net het hoofd van een Koopa Troopa te zien
-           \ref{marioglitchyoutube}}
+           \cite{marioglitchyoutube}}
   \label{koopaglitch}
 \end{figure}
 
@@ -56,7 +56,7 @@ wordt alle code stap voor stap bekeken in begrijpelijke stukken.
 
 De code begint met een module declaratie, deze is niet verplicht maar wel
 nuttig omdat ze het mogelijk maakt de code te gebruiken in andere programma's.
-Daarna importeren we een aantal eenvoudige types uit de standaard bibliotheek.
+Daarna importeren we een aantal eenvoudige types uit de standard library.
 
 \inputagda[firstline=8, lastline=15, breaklines]{agda-casestt/koopa.agda}
 
@@ -417,7 +417,7 @@ met een kleine letter.
 Om te beginnen moeten we een aantal types die we in Agda uit de standard
 library kunnen halen zelf implementeren or is bijvoorbeeld geen erg grote nood
 aan een unaire voorstelling van natuurlijke getallen in Haskell. De naamgeving
-en technieken die we hier gebruiken komen uit een artikel \ref{hasochism} over
+en technieken die we hier gebruiken komen uit een artikel \cite{hasochism} over
 dependently typed programmeren in Haskell met de titel: "Hasochism: The
 Pleasure and Pain of Dependently Typed Haskell Programming." Het wordt redelijk
 snel duidelijk waarom het artikel die titel heeft.
@@ -449,8 +449,8 @@ pattern match doen op de recursieve oproep om met de eigenlijke waarde van de
 Haskell ontbreekt logischerwijs tevens een type voor begrensde natuurlijke
 getallen. Deze keer kunnen we de extra types niet definiëren omdat Haskell het
 \ihask{Fin} type niet kan promoveren. De DataKinds extensie promoveert enkel
-types met argumenten met kind \ihask{*} en \ihask{Fin} heeft een argument met
-kind \ihask{Nat}.
+types met argumenten met \emph{kind} \ihask{*} en \ihask{Fin} heeft een argument met
+\emph{kind} \ihask{Nat}.
 
 \inputhaskell[firstline=27, lastline=35, breaklines]{haskell-casestt/koopa.hs}
 
@@ -541,7 +541,7 @@ Voor het \ihask{Follows} type is de implementatie redelijk eenvoudig. Buiten de
 typeclass constraint in plaats van een instance argument en het polymorfisme in
 plaats van impliciete argumenten, is het grootste verschil de syntax. Haskell
 laat binaire infix constructors toe en met de extensie TypeOperators
-\ref{typeops} ook types en typeclasses maar een ternaire mixfix notatie is er
+\cite{typeops} ook types en typeclasses maar een ternaire mixfix notatie is er
 niet. We gebruiken dus gewoon een type met drie parameters.
 
 \inputhaskell[firstline=120,lastline=124,breaklines]{haskell-casestt/koopa.hs}
@@ -550,10 +550,10 @@ Voor het type \ihask{Path} komen we een probleem tegen.
 
 \inputhaskell[firstline=126,lastline=128,breaklines]{haskell-casestt/koopa.hs}
 
-\ihask{Path} kan geen parameter hebben met kind \ihask{KoopaTroopa} omdat het
-type \ihask{KoopaTroopa} een parameter heeft met een kind, namelijk
+\ihask{Path} kan geen parameter hebben met \emph{kind} \ihask{KoopaTroopa} omdat het
+type \ihask{KoopaTroopa} een parameter heeft met een \emph{kind}, namelijk
 \ihask{Color}, dat niet \ihask{*} is. Zo'n type kan door de DataKinds extensie
-niet gepromoveerd worden dus kunnen we het ook niet als kind gebruiken.
+niet gepromoveerd worden dus kunnen we het ook niet als \emph{kind} gebruiken.
 
 Op dit punt kunnen we hetzelfde pad voorstellen als in de Agda code.
 
@@ -574,7 +574,7 @@ expliciete argumenten van een singleton type.
 \inputhaskell[firstline=138,lastline=163,breaklines]{haskell-casestt/koopa.hs}
 
 De enige functies uit Agda die we nog missen in Haskell zijn de functies die
-een \ihask{Material} voorstellen met een symbool. In haskell kunnen we deze wel
+een \ihask{Material} voorstellen met een symbool. In Haskell kunnen we deze wel
 definiëren zoals in Agda, mits we geldige karakters gebruiken, functienamen
 moeten uit alfanumerieke karakters bestaan en niet alle unicode karakters zijn
 alfanumeriek. Maar omdat we geen fixity declaratie kunnen geven voor een
@@ -607,7 +607,7 @@ teruggeven. Het probleem hiermee duikt pas op in de voorbeelden: we kunnen een
 zit zolang we die \ihask{Positionny} ofwel verbruiken in een functie, ofwel
 terug verpakken in een type zoals \ihask{POSITIONNY}. In \ihask{p} kunnen we
 geen van beide doen, het \ihask{Path} heeft de \ihask{Positionny} nodig dus we
-kunnen die niet \emph{verbruiken} en het type \ihask{Path} heeft ook de
+kunnen die niet omzetten in iets anders en het type \ihask{Path} heeft ook de
 informatie uit het type van de \ihask{Positionny} nodig en daar kunnen we niet
 aan.
 
@@ -615,14 +615,14 @@ Dit probleem is wel op te lossen maar de oplossing is niet eenvoudig. Het
 probleem is eigenlijk dat we het type van een element niet uit de
 \ihask{Matrix} kunnen halen zoals in Agda. Om dit in Haskell te kunnen doen zou
 het type \ihask{Matrix} een overeenkomstig singleton type moeten hebben. Maar
-\ihask{Matrix} heeft parameters met kind \ihask{Nat} en kan dus niet
+\ihask{Matrix} heeft parameters met \emph{kind} \ihask{Nat} en kan dus niet
 gepromoveerd worden. Dit kunnen we oplossen door natuurlijke getallen te
-definiëren met kind \ihask{*}: een leeg type \ihask{Z} en een leeg type
+definiëren met \emph{kind} \ihask{*}: een leeg type \ihask{Z} en een leeg type
 \ihask{S n} bijvoorbeeld. Maar we komen hetzelfde probleem tegen in het type
 van de constructor \ihask{Mat}, het vector type daar is ook niet te promoveren
-omdat \ihask{Vec} weer een parameter van kind \ihask{Nat} heeft. Dit kunnen we
-oplossen door het kind \ihask{Nat} in de definitie van \ihask{Vec} te vervangen
-door het kind \ihask{*}. Op deze manier kan de DataKinds extensie het
+omdat \ihask{Vec} weer een parameter van \emph{kind} \ihask{Nat} heeft. Dit kunnen we
+oplossen door het \emph{kind} \ihask{Nat} in de definitie van \ihask{Vec} te vervangen
+door het \emph{kind} \ihask{*}. Op deze manier kan de DataKinds extensie het
 \ihask{Matrix} type promoveren en kunnen we er een singleton voor definiëren.
 Dit is nog niet de hele oplossing en ze is ook niet geïmplementeerd omdat we
 hierbij gedeeltelijk garanties verliezen. Plotseling is \ihask{S Bool} een
@@ -695,12 +695,11 @@ De eerste fout gaat over het pad als een geheel en zegt dat het eigenlijke
 specifieke positie, Haskell leidt wel af dat de \ihask{Material} \ihask{Gas}
 moet zijn maar niet dat de \ihask{Clearance} \ihask{Ultimate} niet zou mogen
 voorkomen. De derde fout gaat wel over de \ihask{Clearance} voor een rode Koopa
-Troopa. Deze drie zijn heel volledig maar we moeten wel goed opletten als er
-verschillende fouten zijn, of die niet allemaal dezelfde oorzaak hebben zoals
-hier. Merken we ook nog op dat de eerste fout alleen verschijnt als we de type
-signature voor \ihask{redNoPathOne} geven. We moeten dus goed oppassen met
-inferentie omdat we op die manier wel eens iets anders kunnen schrijven dan we
-bedoelen.
+Troopa. Deze drie zijn heel volledig maar we moeten wel goed opletten dat die
+fouten niet allemaal dezelfde oorzaak hebben, zoals hier. Merken we ook nog op
+dat de eerste fout alleen verschijnt als we de type signature voor
+\ihask{redNoPathOne} geven. We moeten dus goed oppassen met inferentie omdat we
+op die manier wel eens iets anders kunnen schrijven dan we bedoelen.
 
 De fout voor \ihask{redNoPathTwo} is veel korter.
 
@@ -722,7 +721,7 @@ De fout voor \ihask{redNoPathTwo} is veel korter.
 \end{Verbatim}
 
 Opnieuw komt het \ihask{Material} dat we verwachten in de type signature niet
-overeen met het type dat door \ihask{Pcons} word afgedwongen. Als we de type
+overeen met het type dat door \ihask{Pcons} wordt afgedwongen. Als we de type
 signature niet opgeven krijgen we ook weer een andere fout.
 
 De fout voor \ihask{redNoPathThree} is nog korter en is ook anders dan de
@@ -790,8 +789,8 @@ waar een fout in de programmatuur ontzettend duur kan zijn. Of een
 veiligheidssysteem waar levens van afhangen. Enkel voor zulke systemen is het
 extra werk voor een volledige statische verificatie aanvaardbaar. Maar
 dependent types laten toe om maar gedeeltelijke verificatie te doen,
-bijvoorbeeld werken met vectoren in plaats van lijsten en begrensde getallen
-als indices voorkomt elke vorm van indexeringsfouten.
+bijvoorbeeld werken met vectoren, in plaats van lijsten en begrensde getallen
+als indices, voorkomt elke vorm van indexeringsfouten.
 
 We hebben ook een duidelijk verschil gezien tussen programmeren in een
 \emph{volwaardige} dependently type taal en een eerder praktische taal met een
@@ -803,9 +802,13 @@ extra werk nog steeds aanvaardbaar zijn afhankelijk van de kost van fouten maar
 is het waarschijnlijk eerder voordelig om te werken met gedeeltelijke
 verificatie. Wat hier wel tegenover staat is dat Haskell met deze technieken in
 de praktijk bruikbaar is, daar waar Agda nog een lange weg te gaan heeft
-voordat dit het geval is.
+voordat dit het geval is. Ook is een ontwikkeling als het singleton package
+\cite{singletonpack} het vermelden waard, dit zou gedeeltelijk voor een
+vereenvoudiging kunnen zorgen wat de veelheid aan types betreft die we
+momenteel nodig hebben.
 
-In het volgende hoofdstuk bekijken we een tweede gevalstudie waar we de
-tekortkomingen van Haskell tegenover volwaardige dependent types op een andere
-manier oplossen.
+De code voor dit hoofdstuk is in zijn geheel terug te vinden in appendices
+\ref{app:case-koopa-agda} en \ref{app:case-koopa-haskell}. In het volgende
+hoofdstuk bekijken we een tweede gevalstudie waar we de tekortkomingen van
+Haskell tegenover volwaardige dependent types op een andere manier oplossen.
 

@@ -1,2 +1,430 @@
 \chapter{Case: Verified Red-Black Trees}
 \label{case:rbtree}
+
+
+\section{Inleiding}
+
+Deze tweede gevalstudie gaat over een implementatie van red-black trees
+\cite{rbtrees}. Red-black trees zijn een soort binaire zoekbomen, door één
+extra bit aan informatie bij te houden voor elke knoop zijn ze bij benadering
+gebalanceerd. Deze benaderende balans is goed genoeg om $\mathcal{O}(\log{}n)$
+tijdscomplexiteit te garanderen voor het opzoeken van een element, een element
+toe te voegen en een element te verwijderen. Zoekbomen worden vaak gebruikt om
+meer abstracte datastructuren te implementeren bijvoorbeeld verzamelingen en
+associatieve arrays. Vooral voor de geordende varianten van die datastructuren
+kunnen zoekbomen voordeliger zijn voor de implementatie dan hashtabellen omdat
+zoekbomen per definitie geordend zijn.
+
+Chris Okasaki heeft een elegante implementatie van red-black trees
+\cite{okasaki} in een functionele programmeertaal geschreven, in Haskell.
+De implementaties in dit hoofdstuk zijn hierop gebaseerd.
+Zijn implementatie is gebaseerd op een bondige formulering van de red-black
+tree invarianten. Deze gaan als volgt:
+
+\begin{description}
+  \item[Invariant 1] Geen enkele rode knoop heeft een rode ouder.
+  \item[Invariant 2] Elk pad van de wortel naar een blad bevat hetzelfde aantal
+                     zwarte knopen.
+\end{description}
+
+De implementatie van Okasaki wordt hier herhaald zodat het eenvoudig is om te
+zien wat van het oorspronkelijk algoritme komt en wat toegevoegd is om de twee
+invarianten statisch te garanderen.
+
+\inputhaskell[breaklines]{haskell-casestt/Okasaki.hs}
+
+Omdat deze implementatie zo kort en eenvoudig is kan bijna iedereen deze code
+waarschijnlijk begrijpen. Maar omdat datastructuren zo fundamenteel zijn aan
+alles wat programma's doen, is het belangrijk dat ze correct zijn. Eén
+datastructuur kan nog wel correct gehouden worden door goed na te denken over
+aanpassingen en een mentaal model van de werking bij te houden maar vanaf dat
+er een tiental datastructuren zijn is er bijna niemand die ervoor kan zorgen
+dat die correct zijn en blijven. Gewoonlijk wordt er daarom een suite van tests
+opgesteld die regelmatig uitgevoerd dienen te worden, iedere keer dat er een
+fout gevonden wordt, worden er tests toegevoegd die die fout zouden detecteren
+als ze ooit terugkomt. Dit is een bewezen methode maar omvat onmiskenbaar een
+hoop extra werk: tests moeten geschreven worden en onderhouden omdat
+bijvoorbeeld de interface tot het programma kan veranderen. Een zwakheid van
+deze aanpak is dat de tests vaak niet alle mogelijke gevallen afdekken: we
+moeten vertrouwen op ons vermogen om te redeneren over de code om speciale
+gevallen te ontdekken waar een grote kans is dat er iets mis gaat. Om dit op te
+lossen zijn er gerandomiseerde testprogramma's, zoals QuickCheck
+\cite{quickcheck}, bedacht die het vinden van speciale gevallen automatiseren.
+In de implementaties in dit hoofdstuk daarentegen maken we gebruik van de
+expressiviteit van dependent types om de invarianten door het typesysteem te
+laten nakijken en zo de code statisch te verifiëren.
+
+
+\section{Red-Black Trees in Agda}
+
+De code van Okasaki is heel elegant maar ze bevat heel weinig statische
+garanties. Het \ihask{Tree} type bijvoorbeeld voorkomt helemaal geen misbruik:
+\ihask{T R (T R E 1 E) 2 E} is een geldige boom, net zoals \ihask{T B (T B E 1
+E) 2 E} terwijl beiden niet voldoen aan de invarianten van red-black trees.
+Dit betekent dat we goed moeten opletten als we een functie schrijven die een
+\ihask{Tree} moet teruggeven omdat we geen waarschuwing krijgen als we een
+ongeldige boom proberen op te stellen. Om nog maar niet te vermelden hoe we met
+ongeldige bomen als invoer moeten omspringen? De gemakkelijkste oplossing is om
+er niets aan te doen, maar dan kan het programma crashen omdat we ergens in een
+functie impliciet aannamen dat de invoer een geldige red-black tree zou zijn.
+Wat mogelijk nog erger is dan een crash is geen crash, een ongeldige boom gaat
+door het programma en elke functie waarmee die in aanraking komt kan er iets
+aan verandert hebben, op het einde merken we dat de uitvoer niet correct is
+en nu moeten we uitzoeken waar het precies mis gegaan is. De expressiviteit van
+dependent types kan ons hierbij helpen, als we ervoor zorgen dat een ongeldige
+boom niet opgesteld kan worden, kunnen we ook geen problemen hebben met
+ongeldige bomen. Het \iagda{Tree} type in Agda is eigenlijk een exacte
+definitie van wat een red-black tree is terwijl het \ihask{Tree} type van
+Okasaki eender welke binaire boom met rood en zwart gekleurde knopen voorstelt.
+
+\inputagda[firstline=16,lastline=33,breaklines]{agda-casestt/RedBlackTree.agda}
+
+We beginnen met een aantal imports en de definities van implicatie en mixfix
+\emph{if then else}, alles dat we hier zien wordt uitgelegd daar waar het voor
+het eerst gebruikt wordt.
+
+\inputagda[firstline=35,lastline=43,breaklines]{agda-casestt/RedBlackTree.agda}
+
+We definiëren een geparametriseerde module, \iagda{RBTree}, met als parameter
+een record van het type \iagda{StrictTotalOrder}. De \iagda{a} en \iagda{ℓ}
+parameters zijn levels en zorgen ervoor dat de elementen van onze boom ook
+elementen van een type in één van de grotere universa kunnen zijn. Door een
+element van het type \iagda{StrictTotalOrder} te eisen, kunnen we er zeker van
+zijn dat we de elementen kunnen ordenen en de zoekbomen dus nuttig kunnen
+invullen. De twee volgende regels zorgen ervoor dat we in de rest van de code
+in de module kunnen verwijzen naar dit type met een strikte totale orderelatie
+als \iagda{A}. De pattern declaraties zorgen ervoor dat we met een compactere
+notatie kunnen werken voor het resultaat van een vergelijking. Op deze manier
+verbergen we een aantal bewijzen die we niet echt nodig hebben. Ten slotte
+kiezen we een symbool om de vergelijkingsfunctie te verkorten. Het symbool
+staat voor de relatie "kleiner dan of gelijk aan" maar het resultaat van de
+functie is \iagda{LT} als het eerste argument voor het tweede komt, \iagda{EQ}
+als de elementen gelijk zijn en \iagda{GT} als het eerste element na het tweede
+komt.
+
+Nu kunnen we net als Okasaki beginnen met definiëren wat een kleur is en wat een
+red-black tree is.
+
+\inputagda[firstline=46,lastline=59,breaklines]{agda-casestt/RedBlackTree.agda}
+
+Het type \iagda{Color} is heel eenvoudig, de functie \iagda{_=ᶜ_} is niet meer
+dan een vergelijking van twee kleuren op gelijkheid met een Booleaans
+resultaat. We definiëren ook nog een synoniem voor natuurlijke getallen,
+\iagda{Height}, wat het aantal zwarte knopen op een pad van de wortel naar een
+willekeurig blad voorstelt. Het type \iagda{Tree} is ook nog redelijk eenvoudig
+maar dwingt wel meteen de twee invarianten af. De constructor voor een rode
+knoop, \iagda{R}, laat enkel kinderen toe met een zwarte wortel, op die manier
+kan een rode knoop nooit een rode ouder hebben. Dit zorgt dat invariant 1
+behouden blijft. Overigens moeten de twee kinderen dezelfde hoogte hebben om
+invariant 2 te behouden. De constructor, \iagda{B}, eist eveneens dat de
+kinderen een gelijke hoogte hebben zodat invariant 2 behouden blijft. Meer is
+er niet nodig om een type op te stellen dat enkel correcte red-black trees kan
+voorstellen.
+
+Het grootste voordeel van dit preciezere type is tegelijk ook een nadeel:
+algoritmes verbreken vaak tijdelijk een of meerdere invarianten omdat het soms
+eenvoudiger is om iets kapot te maken en daarna in stappen te herstellen dan om
+alles in één keer goed te doen. Dit is vooral het geval wanneer een verandering
+een andere verandering tot gevolg kan hebben met een domino-effect. Okasaki
+maakt gebruik van deze techniek in zijn \ihask{ins} functie: \ihask{ins} zou
+een ongeldige boom kunnen teruggeven en daarom zijn de oproepen naar
+\ihask{ins} als het ware afgeschermd door \ihask{makeBlack} of \ihask{balance}.
+De \ihask{ins} functie kan een boom teruggeven met een rode wortel en één rood
+kind, dit noemen we ook wel een infrarode boom. Een infrarode boom kan altijd
+hersteld worden door de wortel zwart te kleuren maar dit vergroot de hoogte met
+één. Tijdens het toevoegen van een element vermijden we liever veranderingen
+van hoogte omdat als één kind hoger wordt dan het andere, we de boom moeten
+herbalanceren. De recursieve oproepen naar \ihask{ins} zijn daarom afgeschermd
+door oproepen naar \ihask{balance}. Het is tevens het algoritme voor
+herbalancering waar de oplossing van Okasaki zijn elegantie vandaan haalt. Als
+het resultaat van een recursieve oproep naar \ihask{ins} een infrarode boom is,
+dan moet de wortel van het kind waarin we de waarde hebben toegevoegd, rood
+zijn geweest en dat kan alleen als de ouder van dat kind zwart was. Dit zijn nu
+net de voorwaarden voor de \ihask{balance} functie van Okasaki. Omdat we zulk
+een tijdelijke schending van de invarianten niet kunnen voorstellen in ons
+\iagda{Tree} type, hebben we een nieuw type nodig dat infrarode bomen kan
+voorstellen.
+
+\inputagda[firstline=61,lastline=63,breaklines]{agda-casestt/RedBlackTree.agda}
+
+Omdat we nu twee verschillende types hebben voor red-black trees en infrarode
+bomen kunnen we de \iagda{balance} functie niet implementeren zoals Okasaki.
+Soms zou het type van het linker argument infrarood moeten zijn en het rechts
+red-black en soms omgekeerd. We kunnen dit gedrag wel vatten in een nieuw type.
+
+\inputagda[firstline=65,lastline=67,breaklines]{agda-casestt/RedBlackTree.agda}
+
+Dankzij de flexibele mixfix syntax van Agda kunnen we nu deze toepassing uit
+Haskell, \ihask{balance B infra b c}, als volgt schrijven in Agda:
+\iagda{balance (infra ◂ b ◂ c)}. We hebben ook geen nood meer aan het kleur
+argument, waarom komt later aan bod.
+We komen nog één type te kort, sommige functies zoals \iagda{ins} kunnen zowel
+een geldige als een ongeldige boom teruggeven. Omdat deze voorgesteld worden
+door twee aparte types hebben we een type nodig dat werkt als een disjuncte
+vereniging van die twee types.
+
+\inputagda[firstline=69,lastline=71,breaklines]{agda-casestt/RedBlackTree.agda}
+
+Meer precisie kost meer werk, wat bij Okasaki één type was, zijn er nu vier.
+Hoe preciezer we willen zijn hoe meer we expliciet moeten maken: dit zal ook
+duidelijk worden in de implementaties van de functies. De eerste functie die we
+bekijken is \iagda{balance}.
+
+\inputagda[firstline=75,lastline=79,breaklines]{agda-casestt/RedBlackTree.agda}
+
+De implementatie gelijkt sterk op die van Okasaki maar er zijn subtiele
+verschillen. Het kleur argument is niet langer nodig, Okasaki gebruikt dit
+eigenlijk alleen in het geval dat hij niets doet met de invoer om de argumenten
+terug samen te stellen tot een geldige boom met dezelfde kleur wortel. Omdat
+onze functie enkel bomen aanvaard die gebalanceerd \emph{moeten} worden en een
+gebalanceerde boom altijd rood is, weten we op voorhand wat de kleur van de
+boom is die we teruggeven. Dit kunnen we alleen maar doen omdat ons type nu
+strikt genoeg is om geldige bomen uit te sluiten van \iagda{balance}. Dit
+betekent wel dat we op de plaats waar we \iagda{balance} willen gebruiken,
+zeker moeten zijn dat we een ongeldige boom hebben. Om die beslissing te kunnen
+maken moeten we vaak meer gevallen van mekaar scheiden maar dit heeft ook
+voordelen. In definities zoals die van Okasaki worden sommige functies soms
+uitgevoerd zonder dat ze iets doen, als er dan een bug optreedt, moeten ook
+deze functies nagegaan worden omdat we niet op voorhand weten of de functies de
+waarde inderdaad onveranderd laten.
+
+De functies die Okasaki met een locale definitie implementeert in
+\ihask{insert} zijn meer veranderd. Ze zijn niet meer lokaal gedefinieerd omdat
+de \iagda{where} expressie uit Agda maar geldt voor één vergelijking. De
+eenvoudigste van die functies is \iagda{blacken}, die hetzelfde doet als
+\ihask{makeBlack}.
+
+\inputagda[firstline=81,lastline=87,breaklines]{agda-casestt/RedBlackTree.agda}
+
+Het enige dat \iagda{blacken} doet, is de wortel van een boom zwart kleuren.
+Dit wordt bemoeilijkt omdat we dit zowel voor een geldige als voor een
+ongeldige boom moeten doen, vandaar het type \iagda{Treeish} voor het argument.
+Omdat we een nieuwe knoop teruggeven met een andere constructor moeten we de
+invoer volledig uit elkaar halen en terug samenstellen in het resultaat, daarom
+zijn er zoveel meer vergelijkingen. Dit is de eerste keer dat we zien dat het
+type van het resultaat een functie oproep is. In dit geval hangt het af van de
+kleur van de wortel van de invoer of de boom hoger wordt of niet: als een rode
+wortel zwart wordt gekleurd verhoogt de boom. Daarom gebruiken we
+\iagda{if_then_else_} in het type en omdat we met dependent types werken is dit
+geen probleem: het resultaat van een functie kan een type zijn en dit type
+kunnen we ook meteen gebruiken als type.
+
+Omdat \iagda{ins} niet meer lokaal gedefinieerd is moeten we het argument dat
+we gaan toevoegen expliciet maken. De functie \iagda{ins} geeft een red-black
+tree terug als de invoer een zwarte boom was en geeft een red-black tree of een
+infrarode boom terug, in de vorm van een \iagda{Treeish}, als de invoer een
+rode boom was. De hoogte van het resultaat is dezelfde als die van de invoer,
+wat enkel verzekerd kan worden omdat we een infrarode boom kunnen teruggeven:
+het is het zwart maken van de wortel dat de hoogte kan verhogen. De kleur van
+de boom die we teruggeven, kunnen we niet zomaar bepalen daarom is de kleur
+existentieel gekwantificeerd met een dependent pair, een koppel waarvan het
+type van het tweede element kan afhangen van de waarde van het eerste. Dit
+betekent wel dat we altijd een koppel van een kleur en een boom moeten
+teruggeven.
+
+\inputagda[firstline=89, lastline=111,
+           breaklines]{agda-casestt/RedBlackTree.agda}
+
+Wat meteen opvalt is dat de definitie van \iagda{ins} veel langer is dan in de
+implementatie van Okasaki. Dit is vooral omdat we veel preciezer moeten zijn.
+Wat voor boom we teruggeven en of we moeten balanceren of niet, maakt veel uit.
+De \iagda{with} expressie laat ons toe om de tussentijdse resultaten te
+inspecteren die we nodig hebben om te beslissen wat voor boom we teruggeven en
+of we moeten herbalanceren. De code leest als volgt, bijvoorbeeld voor het
+derde deel waar we \iagda{ins} toepassen op een boom met een zwarte wortel,
+\iagda{(B _ b _)}. Als het element dat we wensen toe te voegen, \iagda{a},
+kleiner, \iagda{LT}, is dan het element in de wortel, \iagda{b}, en de
+toevoeging van het element aan het linkse kind, \iagda{ins a l}, heeft als
+resultaat \iagda{c , RB t} dan is de boom die we teruggeven zwart, \iagda{B , B
+t b r}. Als daarentegen het resultaat van \iagda{ins a l}, \iagda{.R , IR t}
+is, dan is het resultaat sowieso een rode boom en moeten we herbalanceren,
+\iagda{R , balance (t ◂ b ◂ r)}. De dot patterns in Agda, zoals \iagda{.R},
+betekenen dat die waarde de enige mogelijke waarde is wat door Agda nagegaan
+wordt.
+
+De \iagda{insert} functie die we nu kunnen definiëren is preciezer dan die van
+Okasaki, maar is niet zo precies mogelijk: de mogelijk hoogtes van het
+resultaat zijn beperkt maar de hoogte is niet volledig bepaald. In de import
+declaratie voor de disjuncte vereniging, \iagda{Sum}, hebben we de constructors
+een naam gegeven die aangeeft of een boom van gelijke hoogte is als de invoer,
+\iagda{h+0} of één hoger geworden is \iagda{h+1} dit maakt het resultaat iets
+makkelijker leesbaar. Dat het resultaat een disjuncte vereniging is, is een
+toegeving. Het probleem met preciezer zijn, is dat het moeilijk op voorhand te
+bepalen is of een boom hoger zal worden na het toevoegen van een element. Een
+functie die dit bepaalt, is wel gemakkelijk te schrijven en kunnen we gebruiken
+in het type maar Agda kan niet redeneren over zo'n complexe functie en in
+combinatie met de totaliteitsvoorwaarde voor functies in Agda zorgt dit voor
+problemen waar een invoer, die eigenlijk niet kan gegeven worden, ervoor zorgt
+dat we een uitvoer zouden moeten geven die we niet kunnen opstellen. Een
+oplossing hiervoor kan waarschijnlijk gevonden worden met een bewijs dat
+duidelijk maakt voor Agda wat wel en niet kan voorkomen. De aanzienlijke
+moeilijkheid om zo een bewijs op te stellen tegenover de extra precisie die we
+verkrijgen voor de hoogte is in dit geval niet de moeite waard gevonden. Hier
+hebben we dus gekozen voor eenvoud over precisie.
+
+\inputagda[firstline=113, lastline=120,
+           breaklines]{agda-casestt/RedBlackTree.agda}
+
+De \iagda{insert} functie neemt een waarde en een red-black tree en geeft een
+red-black tree terug van dezelfde hoogte of één hoger. De gevallen voor een
+rode en een zwarte boom moeten we opsplitsen omdat \iagda{ins} respectievelijk
+een \iagda{Tree} of een \iagda{Treeish} teruggeeft.
+
+Nu rest er ons enkel nog de definities voor verzamelingen op basis van de bomen
+te geven. Ze zijn niet even handig geformuleerd als die van Okasaki maar de
+focus van deze gevalstudie ligt hier ook niet op.
+
+\inputagda[firstline=123, lastline=139,
+           breaklines]{agda-casestt/RedBlackTree.agda}
+
+Ten slotte is er nog een voorbeeld van hoe we met deze bomen kunnen werken, het
+interessantste hieraan zijn de bewijsjes vanonder die aantonen dat een bepaalde
+boom gelijk is aan een toevoeging van een element aan een andere boom.
+
+\inputagda[firstline=146, lastline=172,
+           breaklines]{agda-casestt/RedBlackTree.agda}
+
+
+\section{Red-Black Trees in Haskell}
+
+In Haskell beginnen we opnieuw met de declaratie van de LANGUAGE pragma's die
+we nodig hebben en de definitie van natuurlijke getallen. Deze keer gebruiken
+we geen singleton types dus blijft het eenvoudiger. Ook de kleuren zijn nog
+steeds eenvoudig.
+
+\inputhaskell[firstline=16, lastline=21,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+Het \ihask{Tree} type is vrij gelijkaardig aan het \iagda{Tree} type uit de
+Agda code.
+
+\inputhaskell[firstline=23, lastline=26,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+Het grootste verschil, buiten de namen van de constructors, is dat het
+\ihask{Tree} type een extra parameter heeft voor het polymorfisme. In Agda
+konden we door de parameter van de module als het ware overal aannemen dat het
+type van de elementen gekend was. Haskell heeft geen geparametriseerde modules
+dus maken we al onze types polymorf en voegen we constraints toe aan de
+functies die vergelijkingen moeten kunnen doen.
+
+Wat we nog niet zijn tegengekomen is het implementeren van een typeclass voor
+een GADT, dit kan wel eens verrassend moeilijk zijn. Daarom tonen we hier een
+voorbeeld voor de \ihask{Eq} typeclass.
+
+\inputhaskell[firstline=28, lastline=48,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+Omdat de kleuren van de kinderen van een zwarte knoop onbepaald zijn moeten we
+veel meer pattern matches doen omdat Haskell anders niet genoeg kan afleiden
+over de hoogtes van de kinderen. Het enige nut van deze typeclass is om te
+kunnen testen of een boom die we uit \ihask{insert} krijgen gelijk is aan een
+andere boom wat alleen tijdens de uitvoering kan bepaald worden.
+
+Omdat het \ihask{Tree} type opnieuw specifieker is dan bij Okasaki komen we
+hetzelfde probleem tegen en hebben we een aantal extra types nodig.
+
+\inputhaskell[firstline=51, lastline=61,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+Op een paar verschillen na, zoals dit zijn GADTs waar we in Agda inductive
+families gebruiken. Hier werken we met polymorfisme en Haskell laat geen mixfix
+notatie toe, gelijken deze types sterk op de types uit de Agda implementatie.
+
+De \ihask{balance} functie is opnieuw zeer gelijkaardig.
+
+\inputhaskell[firstline=65, lastline=69,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+De functie \ihask{blacken} heeft een iets minder precies type. Functies op het
+niveau van types zijn in Haskell veel meer beperkt, net omdat er een verschil
+is tussen waarden en types, terwijl in Agda alle types waarden zijn. De
+TypeFamilies extensie \cite{typefam} van GHC biedt iets wat lijkt op een
+functie op het typeniveau. Hier kiezen we opnieuw voor een eenvoudigere
+oplossing door het type minder precies te maken.
+
+\inputhaskell[firstline=71, lastline=76,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+Het type dat we teruggeven is nu een disjuncte vereniging, we moeten dus
+expliciet aangeven of het resultaat dezelfde hoogte heeft of één hoger geworden
+is.
+
+De \ihask{ins} functie heeft ook een iets minder streng type, we geven nu
+altijd een \ihask{Treeish} terug in plaats van af en toe een \ihask{Tree}. In
+dit geval vervangen we het dependent pair uit Agda door een disjuncte
+vereniging. Dit gaat alleen als het type waarover het dependent pair
+existentieel kwantificeert, exact twee elementen heeft. In deze functie moeten
+we ook de volgorde van elementen kunnen bepalen, daarom leggen we een
+\ihask{Ord} constraint op, op het type van de elementen.
+
+\inputhaskell[firstline=78, lastline=97,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+De functie maakt nu gebruik van pattern guards \cite{patguard} omdat
+\ihask{ins} altijd een \ihask{Treeish} teruggeeft en we aan de boom of
+infrarode boom moeten geraken die daar in zit. Dit is niet gewoon een kwestie
+van pattern matchen en het is enkel gelukt met pattern guards, \ihask{case}
+expressies zouden dus ook moeten werken. Dat het type dat \ihask{ins}
+teruggeeft altijd \ihask{Treeish} is, zou problemen geven in Agda. Omdat Agda
+een totale programmeertaal is, zouden we als we willen pattern matchen op een
+functie die een \ihask{Treeish} teruggeeft, een match moeten voorzien voor elk
+geval dat mogelijk is volgens het type. Concreet zou dit willen zeggen voor
+\ihask{ins} dat we een match moeten voorzien voor een infrarode boom, ook al
+geven we als invoer een zwarte boom, wat eigenlijk niet kan voorkomen. In het
+kort komt het erop neer dat we in Agda een functie zouden moeten definiëren om
+het geval te dekken dat niet kan voorkomen. Dit heeft natuurlijk niet veel zin
+en het is logischer om het type preciezer te maken. In Haskell geeft dit geen
+probleem omdat we partiële functies mogen definiëren. Omdat er niet
+gecontroleerd wordt op totaliteit kan het wel zijn dat we ergens een geval over
+het hoofd zien dat toch kan voorkomen dus moeten we beter opletten.
+
+De \ihask{insert} functie is terug eenvoudiger omdat \ihask{ins} nu altijd een
+\ihask{Treeish} teruggeeft. Het type is ongeveer dat uit Agda, op polymorfisme
+en de \ihask{Ord} constraint na. En we gebruiken weer een pattern guard om het
+tussentijds resultaat uit te pakken vooraleer we het aan \ihask{blacken} kunnen
+geven.
+
+\inputhaskell[firstline=99, lastline=102,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+De functies voor verzamelingen hebben ongeveer hetzelfde nadeel als in Agda.
+
+\inputhaskell[firstline=105, lastline=121,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+En tenslotte kunnen we opnieuw een voorbeeld geven van het gebruik, jammer
+genoeg zijn de \emph{bewijzen} deze keer alleen na te gaan door ze uit te
+voeren.
+
+\inputhaskell[firstline=126, lastline=149,
+              breaklines]{haskell-casestt/RedBlackTree.hs}
+
+
+\section{Besluit}
+
+Uit deze gevalstudie is duidelijk dat we altijd kunnen kiezen hoever we de
+verificatie doordrijven. De belangrijke invarianten over de volgorde van
+element in een zoekboom zijn hier niet opgenomen in het typesysteem. Dit kan
+verschillende motivaties hebben, misschien vinden we het te eenvoudig om de
+vergelijkingen voor volgorde juist te doen en hebben we geen behoefte aan de
+zekerheid die we zouden krijgen van een statische verificatie. Ook hebben we
+gezien dat als we af en toe een type een beetje verzwakken, dat de code dan heel
+eenvoudig kan blijven. In deze gevalstudie was de code in Haskell helemaal niet
+moeilijker te schrijven omdat we gebruik gemaakt hebben van het feit dat
+Haskell partiële functies toelaat. Verder zijn we in onze opzet geslaagd om
+ervoor te zorgen dat bepaalde functies enkel geldige bomen terug kunnen geven.
+In een interface van een library met datastructuren kan dit handig van pas
+komen omdat we kunnen garanderen aan de gebruiker dat wat hij krijgt altijd een
+geldige datastructuur is.
+
+Wat betreft de implementatie van zoekbomen is deze gevalstudie eerder een
+voorbeeld van een kleine stap richting formalisatie. Af en toe heeft iemand een
+heel goed idee en in dit geval is er bijvoorbeeld een artikel van Conor
+McBride \cite{hkynio} met de titel: "How to Keep Your Neighbours in Order."
+In dit artikel formuleert McBride een elegante en heel erg algemene
+voorstelling voor geördende bomen en andere datastructuren.
+
+De volledige code voor dit hoofdstuk is terug te vinden in appendices
+\ref{app:case-rbtree-agda} en \ref{app:case-rbtree-haskell}.
+In het volgende hoofdstuk zien we nog een besluit over het geheel.
