@@ -50,7 +50,7 @@
   \makeatother%
   \begin{picture}(1,0.79511059)%
     \put(0,0){\includegraphics[width=\unitlength]{KoopaTroopaGlitch.pdf}}%
-    \put(0.42753429,0.17152719){\color[rgb]{1,1,1}\makebox(0,0)[lb]{\smash{Mario}}}%
-    \put(0.42753429,0.03097019){\color[rgb]{1,1,1}\makebox(0,0)[lb]{\smash{Koopa Troopa}}}%
+    \put(0.24171315,0.19186753){\color[rgb]{1,1,1}\makebox(0,0)[lb]{\smash{Mario}}}%
+    \put(0.59429687,0.1922304){\color[rgb]{1,1,1}\makebox(0,0)[lb]{\smash{Koopa Troopa}}}%
   \end{picture}%
 \endgroup%

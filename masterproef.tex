@@ -129,19 +129,25 @@ assistant={Jesper Cockx}}
   \inputhaskell[fontsize=\small, breaklines]{haskell-casestt/koopa.hs}
 
 \chapter{Red-Black Trees in Agda}
-  \label{app:case-rbtree-agda}
   Eerst volgt een redelijk letterlijke vertaling van de code van Okasaki naar
-  Agda om te tonen dat dependent types absoluut niet verplicht zijn.
+  Agda om te tonen dat dependent types absoluut niet verplicht zijn. Daarna de
+  code van de tweede case in Agda.
+  \section{Okasaki}
   \inputagda[fontsize=\small, breaklines]{agda-casestt/Okasaki.agda}
+  \section{Red-Black Trees}
+  \label{app:case-rbtree-agda}
   \inputagda[fontsize=\small, breaklines]{agda-casestt/RedBlackTree.agda}
 
 \chapter{Red-Black Trees in Haskell}
-  \label{app:case-rbtree-haskell}
   Eerst volgt de code van Okasaki dan de code voor de case en daarna nog een
   korte vertaling van de \iagda{if_the_else_} functie in Agda naar een functie
   op typeniveau in Haskell.
+  \section{Okasaki}
   \inputhaskell[fontsize=\small, breaklines]{haskell-casestt/Okasaki.hs}
+  \section{Red-Black Trees}
+  \label{app:case-rbtree-haskell}
   \inputhaskell[fontsize=\small, breaklines]{haskell-casestt/RedBlackTree.hs}
+  \section{Type Level If}
   \inputhaskell[fontsize=\small, breaklines]{haskell-casestt/if.hs}
 % Appendices
 %%%%%%%%%%%%%%%%%%%%
