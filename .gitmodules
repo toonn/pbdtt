@@ -4,3 +4,9 @@
 [submodule "haskell-casestt"]
 	path = haskell-casestt
 	url = github:toonn/haskell-casestt.git
+[submodule "sciartt"]
+	path = sciartt
+	url = github:toonn/sciartt.git
+[submodule "popartt"]
+	path = popartt
+	url = github:toonn/popartt.git
